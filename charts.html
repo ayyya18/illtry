@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Grafik - Analitik Data</title>
+    <link rel="stylesheet" href="Style/charts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>Visualisasi Data Historis</h2>
+                <a href="monitor.html" class="action-btn back-btn"><i class="fas fa-arrow-left"></i> Kembali ke Monitor</a>
+            </div>
+            <div class="card-body">
+                <div class="chart-controls">
+                    <div class="custom-select-wrapper" id="location-filter">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="custom-select-trigger">Kota Surabaya</div>
+                        <div class="custom-options">
+                            <div class="custom-option active" data-value="surabaya"><span>Kota Surabaya</span></div>
+                            <div class="custom-option" data-value="malang"><span>Kota Malang</span></div>
+                            <div class="custom-option" data-value="kediri"><span>Kota Kediri</span></div>
+                            <div class="custom-option" data-value="batu"><span>Kota Batu</span></div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="data-type-filter">
+                        <i class="fas fa-layer-group"></i>
+                        <div class="custom-select-trigger">Suhu Udara</div>
+                        <div class="custom-options">
+                            <div class="custom-option active" data-value="suhuUdara"><span>Suhu Udara</span></div>
+                            <div class="custom-option" data-value="kecepatanAngin"><span>Kecepatan Angin</span></div>
+                            <div class="custom-option" data-value="kelembabanUdara"><span>Kelembaban Udara</span></div>
+                            <div class="custom-option" data-value="temperature"><span>Suhu Tanah</span></div>
+                            <div class="custom-option" data-value="humidity"><span>Kelembaban Tanah</span></div>
+                            <div class="custom-option" data-value="waterlevel"><span>Level Air</span></div>
+                            <div class="custom-option" data-value="phTanah"><span>pH Tanah</span></div>
+                            <div class="custom-option" data-value="lightIntensity"><span>Intensitas Cahaya</span></div>
+                            <div class="custom-option" data-value="tds"><span>TDS</span></div>
+                            <div class="custom-option" data-value="waterTemp"><span>Suhu Air</span></div>
+                            <div class="custom-option" data-value="waterPh"><span>pH Air</span></div>
+                            <div class="custom-option" data-value="dissolvedO2"><span>Dissolved O2</span></div>
+                            <div class="custom-option" data-value="salinitas"><span>Salinitas</span></div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="time-range-filter">
+                        <i class="fas fa-clock"></i>
+                        <div class="custom-select-trigger">Per 5 Menit</div>
+                        <div class="custom-options">
+                            <div class="custom-option" data-value="all"><span>Tampilkan Semua</span></div>
+                            <div class="custom-option active" data-value="5"><span>Per 5 Menit</span></div>
+                            <div class="custom-option" data-value="15"><span>Per 15 Menit</span></div>
+                            <div class="custom-option" data-value="30"><span>Per 30 Menit</span></div>
+                            <div class="custom-option" data-value="60"><span>Per 1 Jam</span></div>
+                            <div class="custom-option" data-value="180"><span>Per 3 Jam</span></div>
+                        </div>
+                    </div>
+                    </div>
+                <div class="chart-container">
+                    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <canvas id="dataChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/charts.js"></script>
+</body>
+</html>

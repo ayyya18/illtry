@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi Akun</title>
+    
+    <link rel="stylesheet" href="style/login.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="image-panel">
+            <div class="slider-container">
+                    <div class="slides">
+                        <div class="slide">
+                            <img src="source/organic-hydroponics-vegetable-farm.jpg" alt="Gambar Latar 1">
+                        </div>
+                        <div class="slide">
+                            <img src="source/young-plants-growing-very-large-plant-commercial-greenhouse.jpg" alt="Gambar Latar 2">
+                        </div>
+                        <div class="slide">
+                            <img src="source/woman-searching-something-internet-using-her-smartphone-while-being-home.jpg" alt="Gambar Latar 3">
+                        </div>
+                    </div>
+                <div class="slider-dots"></div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Buat Akun Baru</h2>
+                    <form id="registerForm">
+                <div id="initial-data-group">
+                    <div class="input-container">
+                        <i class="fas fa-user"></i><input type="text" id="username" placeholder="Username" required><span class="error-text"></span>
+                    </div>
+                    <div class="input-container">
+                        <i class="fas fa-envelope"></i><input type="email" id="email" placeholder="Alamat Email" required><span class="error-text"></span>
+                    </div>
+                    <div class="input-container"><i class="fas fa-phone"></i><input type="tel" id="phone" placeholder="Nomor Telepon" required><span class="error-text"></span>
+                    </div>
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i><input type="password" id="password" placeholder="Password (min. 8 karakter)" required>                    
+                        <span class="toggle-password-icon" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                        </span>
+                        <span class="error-text"></span>
+                    </div>
+                    <div class="input-container">
+                        <i class="fas fa-check-circle"></i><input type="password" id="confirmPassword" placeholder="Konfirmasi Password" required>
+                        <span class="error-text"></span>
+                    </div>
+                </div>
+                <div id="otp-group" style="display: none;">
+                    <p style="margin-bottom:15px; font-size: 0.9em;">Kami telah mengirimkan kode OTP ke email Anda. Silakan periksa dan masukkan di bawah ini.</p>
+                    <div class="input-container">
+                        <i class="fas fa-key"></i><input type="text" id="otp" placeholder="Kode OTP 6 Digit" maxlength="6"><span class="error-text"></span>
+                    </div>
+                </div>
+                <button type="submit" id="registerButton" class="login-btn">Lanjutkan</button>
+                <div id="error-message" style="display: none;" ></div>
+            </form>
+            <p class="register-link">
+                Sudah punya akun? <a href="index.html">Login di sini</a>
+            </p>
+        </div>
+    </div>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth/register-utils.js"></script>
+    <script src="js/auth/register-data.js"></script>
+    <script src="js/auth/register-ui.js"></script>
+    <script src="js/auth/register-main.js"></script>
+</body>
+</html>

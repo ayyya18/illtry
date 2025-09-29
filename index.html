@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    
+    <link rel="stylesheet" href="Style/login.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+    <div class="container">
+    <div class="image-panel">
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide">
+                    <img src="source/organic-hydroponics-vegetable-farm.jpg" alt="Gambar Latar 1">
+                </div>
+                <div class="slide">
+                    <img src="source/young-plants-growing-very-large-plant-commercial-greenhouse.jpg" alt="Gambar Latar 2">
+                </div>
+                <div class="slide">
+                    <img src="source/woman-searching-something-internet-using-her-smartphone-while-being-home.jpg" alt="Gambar Latar 3">
+                </div>
+            </div>
+            <div class="slider-dots"></div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>Administrasi</h2>
+            <div id="loginForm">
+                <div class="input-container" id="username-container">
+                    <i class="fas fa-user"></i><input type="text" id="username" placeholder="Username" required><span class="error-text"></span>
+                </div>
+                <div class="input-container" id="password-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <span class="toggle-password-icon" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    <span class="error-text"></span>
+                </div>
+                <div class="options-container">
+                    <a href="#" id="forgotPasswordLink">Lupa Password?</a>
+                </div>
+                <div class="input-container" id="otp-container" style="display: none;">
+                    <i class="fas fa-key"></i><input type="text" id="otp" placeholder="Kode OTP 6 Digit" maxlength="6"><span class="error-text"></span>
+                </div>
+                <div id="forgot-password-email-group" style="display: none;">
+                    <p class="info-text">Masukkan email terdaftar Anda untuk menerima kode verifikasi.</p>
+                    <div class="input-container">
+                        <i class="fas fa-envelope"></i><input type="email" id="forgot-email" placeholder="Alamat Email">
+                        <span class="error-text"></span>
+                    </div>
+                </div>
+                <div id="reset-password-group" style="display: none;">
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="new-password" placeholder="Password Baru (min. 8 karakter)">
+                        <span class="toggle-password-icon" id="toggleNewPassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                        <span class="error-text"></span>
+                    </div>
+                    <div class="input-container">
+                        <i class="fas fa-check-circle"></i>
+                        <input type="password" id="confirm-new-password" placeholder="Konfirmasi Password Baru">
+                        <span class="toggle-password-icon" id="toggleConfirmNewPassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                        <span class="error-text"></span>
+                    </div>
+                </div>
+                <button type="button" id="loginButton" class="login-btn">Login</button>
+                <div id="error-message" style="display: none;"></div>
+                    <p class="register-link">Belum punya akun? 
+                        <a href="register.html">Daftar di sini</a>
+                    </p>
+                    <p id="back-to-login-container" class="register-link" style="display: none;">
+                        <a href="#" id="backToLoginLink">Kembali ke Login</a>
+                    </p>
+            </div>
+        </div>
+    </div>
+   
+    <script src="js/login/login-firebase.js"></script>
+    <script src="js/login/login-utils.js"></script>
+    <script src="js/login/login-auth.js"></script>
+    <script src="js/login/login-ui.js"></script>
+    <script src="js/login/login.js"></script>
+</body>
+</html>

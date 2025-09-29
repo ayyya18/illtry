@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Manajemen Pengguna</title>
+    <link rel="stylesheet" href="style/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>Manajemen Pengguna</h2>
+                <div class="header-actions">
+                    <a href="monitor.html" class="action-btn back-btn"><i class="fas fa-arrow-left"></i> Kembali ke Monitor</a>
+                    <button id="add-user-btn" class="action-btn add-btn"><i class="fas fa-plus"></i> Tambah Pengguna</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="user-table">
+                        <thead>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Nomor Telepon</th>
+                                    <th>Role</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                        </thead>
+                        <tbody id="user-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal-btn" class="close-modal-btn">&times;</span>
+            <h3 id="modal-title">Tambah Pengguna Baru</h3>
+            <form id="user-form">
+                <input type="hidden" id="user-key">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Nomor Telepon</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password">
+                    <small>Kosongkan jika tidak ingin mengubah password.</small>
+                </div>
+                <button type="submit" class="action-btn save-btn">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="js/admin/admin-firebase.js"></script>
+    <script src="js/admin/admin-utils.js"></script>
+    <script src="js/admin/admin-data.js"></script>
+    <script src="js/admin/admin-ui.js"></script>
+    <script src="js/admin/admin.js"></script>
+</body>
+</html>

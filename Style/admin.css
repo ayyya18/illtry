@@ -1,0 +1,213 @@
+/* --- Reset Dasar & Latar Belakang --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Ubah agar konten mulai dari atas */
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
+    background-size: 400% 400%;
+    animation: gradientAnimation 20s ease-in-out infinite;
+    color: #ffffff;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Container & Card Utama --- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 28px;
+    padding: 40px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.card-header h2 {
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-btn {
+    background-color: #ffffff;
+    color: #1976D2;
+}
+
+.add-btn:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.back-btn {
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: #ffffff;
+}
+.back-btn:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* --- Tabel Pengguna --- */
+.table-container {
+    overflow-x: auto; /* Agar tabel responsif di layar kecil */
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th, .user-table td {
+    padding: 15px;
+    text-align: left;
+}
+
+.user-table thead {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-table th {
+    font-weight: 600;
+}
+
+.user-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.user-table td.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 8px 12px;
+    color: white;
+    border-radius: 8px;
+}
+
+.edit-btn { background-color: #1976D2; }
+.delete-btn { background-color: #D81B60; }
+
+/* --- Modal --- */
+.modal {
+    display: none; /* Sembunyikan secara default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 28px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 40px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.close-modal-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#modal-title {
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    color: #ffffff;
+    font-size: 1em;
+}
+
+.input-group small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+.save-btn {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #ffffff;
+    color: #1976D2;
+}

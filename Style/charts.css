@@ -1,0 +1,118 @@
+/* --- Reset Dasar & Latar Belakang --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; padding: 20px 20px;
+    background: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
+    background-size: 400% 400%; animation: gradientAnimation 20s ease-in-out infinite;
+    color: #ffffff;
+}
+@keyframes gradientAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* --- Container & Card Utama --- */
+.container { width: 100%; max-width: 1450px; }
+.card {
+    background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 35px; padding: 35px;
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 20px; margin-bottom: 20px; }
+.card-header h2 { font-size: 2em; font-weight: 600; }
+.action-btn {
+    padding: 10px 20px; border: none; border-radius: 25px;
+    font-family: 'Poppins', sans-serif; font-size: 0.9em; font-weight: 500;
+    cursor: pointer; transition: all 0.3s ease; text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+}
+.back-btn { background-color: transparent; border: 1px solid rgba(255,255,255,0.5); color: #ffffff; }
+.back-btn:hover { background-color: rgba(255,255,255,0.1); }
+
+/* --- Kontrol Grafik & Dropdown Kustom --- */
+.chart-controls {
+    display: flex; gap: 20px; align-items: center; justify-content: center;
+    margin-bottom: 20px; flex-wrap: wrap;
+}
+.custom-select-wrapper {
+    position: relative;
+    font-size: 1em;
+}
+.custom-select-wrapper > i { /* Gaya untuk ikon di dalam dropdown */
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+}
+.custom-select-trigger {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 10px 20px 10px 45px; /* Padding kiri untuk ikon */
+    color: #ffffff;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.3s, border-color 0.3s;
+    user-select: none;
+    min-width: 220px;
+    text-align: left;
+}
+.custom-select-trigger:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.custom-options {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(68, 68, 68, 0.75);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    border-radius: 25px;
+    padding: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.custom-options.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.custom-option {
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background 0.2s ease;
+}
+.custom-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.custom-option.active span {
+    font-weight: 600;
+}
+
+/* --- Kontainer Grafik & Animasi Loading --- */
+.chart-container {
+    position: relative; /* Diperlukan untuk posisi spinner */
+    background: rgba(0, 0, 0, 0.2); border-radius: 20px;
+    padding: 20px; height: 450px; width: 100%;
+    transition: opacity 0.3s ease-in-out;
+}
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    color: #ffffff;
+    z-index: 10;
+}

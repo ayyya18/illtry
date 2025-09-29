@@ -1,0 +1,305 @@
+/* --- Reset Dasar & Font --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Latar Belakang Dinamis (Diambil dari monitoring.css) --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
+    background-size: 400% 400%;
+    animation: gradientAnimation 20s ease-in-out infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px; /* Lebar total untuk dua kolom */
+    max-height: 650px;
+    display: flex;
+    border-radius: 28px;
+    overflow: hidden; /* Penting agar border-radius bekerja */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* --- Panel Gambar (Kiri) --- */
+.image-panel {
+    flex: 1.7;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+
+}
+.image-panel h2 { font-size: 2.5em; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.image-panel p { font-size: 1.1em; opacity: 0.9; }
+
+.slider-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Sembunyikan slide yang tidak aktif */
+}
+
+.slides {
+    display: flex;
+    width: 300%; /* Lebar total (100% per gambar x 3 gambar) */
+    height: 100%;
+    transition: transform 0.5s ease-in-out; /* Animasi geser */
+}
+
+.slide {
+    width: 33.333%; /* Lebar satu slide */
+    height: 100%;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Pastikan gambar memenuhi area tanpa distorsi */
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: #ffffff;
+}
+
+/* --- Kartu Form (Kanan) --- */
+.card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    background: transparent; /* Latar belakang sekarang ada di container */
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+h2 {
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+}
+
+.input-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+    width: 100%;
+    padding: 15px 15px 15px 45px; /* Padding kiri untuk ikon */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    color: #ffffff;
+    font-size: 1em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Gaya tambahan untuk tombol saat nonaktif/loading */
+.login-btn:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: wait; /* Mengubah kursor menjadi ikon loading */
+    transform: none; /* Menonaktifkan efek hover scale */
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
+}
+
+input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.login-btn {
+    background-color: #ffffff;
+    color: #1976D2; /* Warna biru dari gradien */
+    padding: 15px 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1em;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    margin-top: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+}
+
+#error-message {
+    color: #ffcdd2; /* Merah muda yang lebih lembut */
+    background-color: rgba(211, 47, 47, 0.2);
+    border: 1px solid rgba(211, 47, 47, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 50px;
+    /* display: none; -> Dihapus karena sudah di-handle inline style */
+    font-size: 0.9em;
+}
+.register-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #ffffff;
+    text-align: center;
+}
+
+.register-link a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Gaya untuk container input saat error */
+.input-container.error input {
+    border-color: #ef5350; /* Merah */
+    background-color: rgba(239, 83, 80, 0.1);
+}
+
+/* Gaya untuk container input saat sukses (opsional) */
+.input-container.success input {
+    border-color: #66bb6a; /* Hijau */
+}
+
+/* Gaya untuk teks pesan error di bawah input */
+.error-text {
+    color: #ffcdd2; /* Merah muda lembut */
+    font-size: 0.8em;
+    text-align: left;
+    margin-top: -10px; /* Posisikan lebih dekat ke input */
+    margin-bottom: 10px;
+    padding-left: 5px;
+    display: none; /* Sembunyikan secara default */
+    height: 15px; /* Beri tinggi agar layout tidak "loncat" */
+}
+
+/* login.css */
+
+/* Beri ruang di sebelah kanan kolom password agar teks tidak tertimpa ikon */
+#password, #new-password, #confirm-new-password {
+    padding-right: 45px !important;
+}
+
+/* Style untuk toggle password */
+.input-container .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.input-container .toggle-password i {
+    font-size: 1em;
+}
+
+/* Atur posisi dan gaya untuk wadah ikon mata */
+.toggle-password-icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s;
+}
+
+/* Efek hover agar lebih interaktif */
+.toggle-password-icon:hover {
+    color: #ffffff;
+}
+
+/* login.css */
+
+.options-container {
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+#forgotPasswordLink {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85em;
+    text-decoration: none;
+}
+
+#forgotPasswordLink:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.info-text {
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    line-height: 1.5;
+}

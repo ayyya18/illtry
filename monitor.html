@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="Style/monitor.css">
+</head>
+
+<body>
+    <div id="side-menu" class="side-menu">
+        <a href="#" id="close-btn" class="close-btn">&times;</a>
+        <div class="profile-section">
+            <i class="fa-solid fa-user-circle avatar"></i>
+            <h2 class="username">Nama Pengguna</h2>
+            <p class="email">pengguna@email.com</p>
+        </div>
+        <nav class="side-menu-nav">
+            <ul>
+                <li id="admin-menu-item" style="display: none;"><a href="admin.html"><i class="fa-solid fa-user-shield"></i><span>Admin Dashboard</span></a></li>
+                <li><a href="charts.html"><i class="fa-solid fa-chart-line"></i><span>Analitik Grafik</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-sliders"></i><span>Pengaturan</span></a></li>
+                <li class="logout-item">
+                    <a href="#" id="logoutButton">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div id="overlay" class="overlay"></div>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="header-datetime">
+                    <a href="#" id="profile-btn" class="profile-icon" title="Buka Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </a>
+                    <span id="time">-:-:-</span>
+                    <span id="date">-, - - -</span>
+                </div>
+                <div class="header-controls">
+                    <div class="user-menu">
+                         <i class="fa-solid fa-bell"></i>
+                            <span class="notification-badge"></span>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-footer">
+                                    <a href="#" id="clear-notifications-btn">
+                                        <i class="fa-solid fa-trash-can"></i> Hapus Semua
+                                    </a>
+                                    <a href="#" id="export-excel-btn">
+                                        <i class="fa-solid fa-file-excel"></i> Unduh Excel
+                                    </a>
+                                    <a href="#" id="send-report-make-btn">
+                                        <i class="fa-brands fa-telegram"></i> Kirim Laporan
+                                    </a>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="location-selector custom-select-wrapper" title="Pilih Lokasi">
+                        <i class="fa-solid fa-map-marker-alt"></i>
+                        <div id="customSelectTrigger" class="custom-select-trigger">Kota Surabaya</div>
+                        <div class="custom-options">
+                            <div class="custom-option active" data-value="surabaya">
+                                <span>Kota Surabaya</span>
+                            </div>
+                            <div class="custom-option" data-value="malang">
+                                <span>Kota Malang</span>
+                            </div>
+                            <div class="custom-option" data-value="kediri">
+                                <span>Kota Kediri</span>
+                            </div>
+                            <div class="custom-option" data-value="batu">
+                                <span>Kota Batu</span>
+                            </div>
+                        </div>
+                        <select id="locationDropdown" style="display: none;">
+                            <option value="surabaya">Kota Surabaya</option>
+                            <option value="malang">Kota Malang</option>
+                            <option value="kediri">Kota Kediri</option>
+                            <option value="batu">Kota Batu</option>
+                        </select>
+                    </div>
+                    <div class="location-selector custom-select-wrapper selector-size" id="category-selector-wrapper" title="Pilih Kategori Sensor">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <div id="categorySelectTrigger" class="custom-select-trigger">Mikro Klimat</div>
+                        <div class="custom-options selector-size" id="category-options">
+                            <div class="custom-option active" data-value="mikro-klimat">
+                                <span>Mikro Klimat</span>
+                            </div>
+                            <div class="custom-option" data-value="kualitas-air">
+                                <span>Kualitas Air</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="refreshButton" class="fa-solid fa-arrows-rotate" title="Refresh Data"></a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                                <div class="top-row-horizontal">
+                    <div class="main-weather-display">
+                        <div class="weather-primary">
+                            <div class="temp-slider">
+                                <div class="slides">
+                                    <div class="slide">
+                                        <div class="main-temp-display">
+                                            <i class="fa-solid fa-cloud-sun-rain"></i>
+                                            <span id="suhu">0</span>
+                                            <span class="unit">°C</span>
+                                        </div>
+                                        <div class="main-desc">
+                                            <span id="deskripsi" class="deskripsi">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="slide">
+                                        <div class="weather-secondary">
+                                            <div class="small-metric">
+                                                <div class="metric-label">Soil Humidity</div>
+                                                <div class="metric-value"><span id="slide-humidity">0</span><span class="unit-small">%</span></div>
+                                            </div>
+                                            <div class="small-metric">
+                                                <div class="metric-label">Wind</div>
+                                                <div class="metric-value"><span id="slide-wind">0</span><span class="unit-small">km/h</span></div>
+                                            </div>
+                                            <div class="small-metric">
+                                                <div class="metric-label">Rain</div>
+                                                <div class="metric-value"><span id="slide-rain">0</span><span class="unit-small">mm</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
+                                <div class="slider-dots"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rainfall-card">
+                        <div class="climate-header">
+                            <i class="fa-solid fa-cloud-rain"></i>
+                            <span class="sensor-header">Rainfall Intensity</span>
+                        </div>
+                        <div class="climate-value">
+                            <span class="rain-value" id="hujan">0</span><span class="unit">mm</span>
+                        </div>
+                        <div class="forecast-container" id="rainfall-forecast">
+                            <div class="forecast-item">
+                                <span class="forecast-day">Sen</span>
+                                <i class="forecast-icon fa-solid fa-cloud-sun-rain"></i>
+                                <span class="forecast-rain">0.5 mm</span>
+                            </div>
+                            <div class="forecast-item">
+                                <span class="forecast-day">Sel</span>
+                                <i class="forecast-icon fa-solid fa-cloud-showers-heavy"></i>
+                                <span class="forecast-rain">2.1 mm</span>
+                            </div>
+                            <div class="forecast-item">
+                                <span class="forecast-day">Rab</span>
+                                <i class="forecast-icon fa-solid fa-cloud-showers-heavy"></i>
+                                <span class="forecast-rain">1.8 mm</span>
+                            </div>
+                            <div class="forecast-item">
+                                <span class="forecast-day">Kam</span>
+                                <i class="forecast-icon fa-solid fa-sun"></i>
+                                <span class="forecast-rain">0.0 mm</span>
+                            </div>
+                                <div class="forecast-item">
+                                <span class="forecast-day">Jum</span>
+                                <i class="forecast-icon fa-solid fa-sun"></i>
+                                <span class="forecast-rain">0.0 mm</span>
+                            </div>
+                                <div class="forecast-item">
+                                <span class="forecast-day">Sab</span>
+                                <i class="forecast-icon fa-solid fa-sun"></i>
+                                <span class="forecast-rain">0.0 mm</span>
+                            </div>
+                                <div class="forecast-item">
+                                <span class="forecast-day">Min</span>
+                                <i class="forecast-icon fa-solid fa-sun"></i>
+                                <span class="forecast-rain">0.0 mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stacked-cards-group">
+                        <div class="wind-card">
+                            <div class="climate-header">
+                                <i class="fa-solid fa-wind"></i>
+                                <span>Wind</span>
+                            </div>
+                            <div  class="climate-value">
+                                <span id="kecepatanAngin">0</span><span class="unit"> km/h</span>
+                            </div>
+                        </div>
+                        <div class="humidity-card">
+                            <div class="climate-header">
+                                <i class="fas fa-tint"></i>
+                                <span>Humidity</span>
+                            </div>
+                            <div class="climate-value">
+                                <span id="kelembaban">0</span><span class="unit"> %</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sensor-grid">
+                    <div class="sensor-card mikro-klimat-card">
+                        <div class="sensor-header"><i class="fa-solid fa-temperature-three-quarters"></i><span>Soil Temp.</span></div>
+                        <div class="sensor-value"><span id="temperature">0</span><span class="unit">°C</span></div>
+                    </div>
+                    <div class="sensor-card mikro-klimat-card">
+                        <div class="sensor-header"><i class="fas fa-tint"></i><span>Soil Humidity</span></div>
+                        <div class="sensor-value"><span id="humidity">0</span><span class="unit">%</span></div>
+                    </div>
+                    <div class="sensor-card mikro-klimat-card">
+                        <div class="sensor-header"><i class="fa-solid fa-water"></i><span>Water Level</span></div>
+                        <div class="sensor-value"><span id="waterlevel">0</span><span class="unit">mm</span></div>
+                    </div>
+                     <div class="sensor-card mikro-klimat-card">
+                        <div class="sensor-header"><i class="fa-solid fa-gauge"></i><span>Soil pH</span></div>
+                        <div class="sensor-value"><span id="ph">0</span><span class="unit">pH</span></div>
+                    </div>
+                    <div class="sensor-card mikro-klimat-card">
+                        <div class="sensor-header"><i class="fas fa-sun"></i><span>Light Intens.</span></div>
+                        <div class="sensor-value"><span id="lightIntensity">0</span><span class="unit">lux</span></div>
+                    </div>
+                    <div class="sensor-card kualitas-air-card">
+                        <div class="sensor-header"><i class="fa-solid fa-atom"></i></i><span>TDS</span></div>
+                        <div class="sensor-value"><span id="tds">0</span><span class="unit">ppm</span></div>
+                    </div>
+                    <div class="sensor-card kualitas-air-card">
+                        <div class="sensor-header"><i class="fa-solid fa-temperature-low"></i><span>Suhu Air</span></div>
+                        <div class="sensor-value"><span id="waterTemp">0</span><span class="unit">°C</span></div>
+                    </div>
+                    <div class="sensor-card kualitas-air-card">
+                        <div class="sensor-header"><i class="fa-solid fa-gauge"></i><span>pH Air</span></div>
+                        <div class="sensor-value"><span id="waterPh">0</span><span class="unit">pH</span></div>
+                    </div>
+                    <div class="sensor-card kualitas-air-card">
+                        <div class="sensor-header"><i class="fa-solid fa-wind"></i><span>Dissolved O2</span></div>
+                        <div class="sensor-value"><span id="dissolvedO2">0</span><span class="unit">mg/L</span></div>
+                    </div> 
+                    <div class="sensor-card kualitas-air-card">
+                        <div class="sensor-header"><i class="fa-solid fa-bolt"></i><span>Salinitas</span></div>
+                        <div class="sensor-value"><span id="salinity">0</span><span class="unit">ppt</span></div>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>

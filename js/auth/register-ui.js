@@ -7,6 +7,8 @@ window.RegisterApp = window.RegisterApp || {};
     ns.phoneInput = ns.q('#phone');
     ns.passwordInput = ns.q('#password');
     ns.confirmPasswordInput = ns.q('#confirmPassword');
+    ns.profileImageInput = ns.q('#profileImage');
+    ns.profilePreviewImg = ns.q('#profilePreview');
     ns.registerButton = ns.q('#registerButton');
     ns.globalErrorMessage = ns.q('#error-message');
     ns.initialDataGroup = ns.q('#initial-data-group');
@@ -39,6 +41,17 @@ window.RegisterApp = window.RegisterApp || {};
             else await ns.handleOtpVerification();
         });
 
+        // Profile image preview
+        if (ns.profileImageInput && ns.profilePreviewImg) {
+            ns.profileImageInput.addEventListener('change', function(){
+                const file = this.files && this.files[0];
+                if (file) {
+                    const url = URL.createObjectURL(file);
+                    ns.profilePreviewImg.src = url; ns.profilePreviewImg.style.display = 'block';
+                } else { ns.profilePreviewImg.src = ''; ns.profilePreviewImg.style.display = 'none'; }
+            });
+        }
+
         const togglePassword = ns.q('#togglePassword');
         if (togglePassword){ togglePassword.addEventListener('click', function(){ const type = ns.passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'; ns.passwordInput.setAttribute('type', type); const icon = this.querySelector('i'); icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash'); }); }
     };
@@ -53,7 +66,20 @@ window.RegisterApp = window.RegisterApp || {};
             const email = ns.emailInput.value.trim().toLowerCase();
             const phone = ns.phoneInput.value.trim();
             const password = ns.passwordInput.value;
-            const tmp = await ns.checkUniqueAndSendOtp({ username, email, phone, password });
+            // If a profile image selected, upload it first
+            let profileImageUrl = null;
+            try {
+                const file = ns.profileImageInput && ns.profileImageInput.files && ns.profileImageInput.files[0];
+                if (file) {
+                    ns.setLoading(true, 'Mengunggah foto...');
+                    profileImageUrl = await ns.uploadProfileImage(file);
+                }
+            } catch (uploadErr) {
+                ns.showError(ns.globalErrorMessage, uploadErr.message || 'Gagal mengunggah foto.');
+                ns.setLoading(false, 'Lanjutkan');
+                return;
+            }
+            const tmp = await ns.checkUniqueAndSendOtp({ username, email, phone, password, profileImageUrl });
             ns.temporaryUserData = tmp;
             ns.registrationStage = 'otp';
             if (ns.initialDataGroup) ns.initialDataGroup.style.display = 'none';

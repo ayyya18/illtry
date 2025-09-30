@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Style/register.css">
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
@@ -36,6 +37,17 @@
             <h2>Buat Akun Baru</h2>
                     <form id="registerForm">
                 <div id="initial-data-group">
+                    <div class="input-container profile-upload">
+                        <div class="profile-preview">
+                            <img id="profilePreview" src="" alt="Preview Foto" style="display:none;" />
+                        </div>
+                        <label class="file-label">
+                            <i class="fas fa-camera"></i>
+                            <span>Pilih Foto Profil</span>
+                            <input type="file" id="profileImage" accept="image/*">
+                        </label>
+                        <span class="error-text"></span>
+                    </div>
                     <div class="input-container">
                         <i class="fas fa-user"></i><input type="text" id="username" placeholder="Username" required><span class="error-text"></span>
                     </div>
@@ -72,6 +84,13 @@
     </div>
     <script src="js/firebase-config.js"></script>
     <script src="js/auth/register-utils.js"></script>
+    <script>
+        // Configure Cloudinary for client-side unsigned uploads
+        // Replace with your actual cloud name and unsigned upload preset
+        window.RegisterApp = window.RegisterApp || {};
+        RegisterApp.CLOUDINARY_CLOUD_NAME = 'dca2fjndp';
+        RegisterApp.CLOUDINARY_UPLOAD_PRESET = 'dbimage';
+    </script>
     <script src="js/auth/register-data.js"></script>
     <script src="js/auth/register-ui.js"></script>
     <script src="js/auth/register-main.js"></script>

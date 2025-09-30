@@ -1,0 +1,5 @@
+.profile-upload{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.profile-preview img{ width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid #ddd; }
+.file-label{ display:inline-flex; align-items:center; gap:8px; background:#f1f1f1; padding:8px 12px; border-radius:6px; cursor:pointer; }
+.file-label input[type=file]{ display:none; }
+.profile-upload .error-text{ display:block; color:#e53935; font-size:0.85em; }

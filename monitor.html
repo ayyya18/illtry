@@ -16,7 +16,10 @@
     <div id="side-menu" class="side-menu">
         <a href="#" id="close-btn" class="close-btn">&times;</a>
         <div class="profile-section">
-            <i class="fa-solid fa-user-circle avatar"></i>
+            <div class="avatar-container">
+                <img id="profile-avatar" src="" alt="Foto Profil" class="avatar-img" style="display: none;">
+                <i id="default-avatar" class="fa-solid fa-user-circle avatar-icon"></i>
+            </div>
             <h2 class="username">Nama Pengguna</h2>
             <p class="email">pengguna@email.com</p>
         </div>
@@ -104,7 +107,7 @@
             </div>
 
             <div class="card-body">
-                                <div class="top-row-horizontal">
+                <div class="top-row-horizontal">
                     <div class="main-weather-display">
                         <div class="weather-primary">
                             <div class="temp-slider">

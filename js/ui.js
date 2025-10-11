@@ -1,4 +1,3 @@
-// UI layer: DOM manipulation, dropdowns, menu, and connecting data layer
 (function () {
     const App = window.App = window.App || {};
 
@@ -51,7 +50,6 @@
     }
 
     function wireUI() {
-        // Menu and overlay
         const profileBtn = document.getElementById('profile-btn');
         const sideMenu = document.getElementById('side-menu');
         const closeBtn = document.getElementById('close-btn');
@@ -135,17 +133,36 @@
             });
         });
 
-        // profile & auth
         const storedUsername = localStorage.getItem('username');
         const storedEmail = localStorage.getItem('email');
+        const storedProfileImage = localStorage.getItem('profileImageUrl');
         const userRole = localStorage.getItem('role');
+
         const adminMenuItem = document.getElementById('admin-menu-item');
-        if (userRole === 'admin' && adminMenuItem) { adminMenuItem.style.display = 'block'; }
+        if (userRole === 'admin' && adminMenuItem) {
+            adminMenuItem.style.display = 'block';
+        }
+
         if (storedUsername && storedEmail) {
             const sideMenuUsername = document.querySelector('#side-menu .username');
             const sideMenuEmail = document.querySelector('#side-menu .email');
             if (sideMenuUsername) sideMenuUsername.textContent = storedUsername;
             if (sideMenuEmail) sideMenuEmail.textContent = storedEmail;
+        }
+
+        const profileAvatar = document.getElementById('profile-avatar');
+        const defaultAvatar = document.getElementById('default-avatar');
+        if (storedProfileImage && storedProfileImage !== 'null') {
+            profileAvatar.src = storedProfileImage;
+            profileAvatar.style.display = 'block';
+            defaultAvatar.style.display = 'none';
+            profileAvatar.onerror = function() {
+                profileAvatar.style.display = 'none';
+                defaultAvatar.style.display = 'block';
+            };
+        } else {
+            profileAvatar.style.display = 'none';
+            defaultAvatar.style.display = 'block';
         }
 
         if (localStorage.getItem("isLoggedIn") !== "true") {
@@ -162,7 +179,6 @@
         const initCategory = localStorage.getItem('lastCategory') || 'mikro-klimat';
         toggleCategoryView(initCategory);
 
-        // date/time and top-level buttons
         const updateDateTime = () => {
             const now = new Date();
             document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -182,8 +198,8 @@
         const refreshButton = document.getElementById('refreshButton');
         refreshButton.addEventListener('click', (e) => { e.preventDefault(); App.data && App.data.loadDataForLocation && App.data.loadDataForLocation(localStorage.getItem('currentLocation') || 'surabaya'); });
 
-    const clearNotif = document.getElementById('clear-notifications-btn');
-    clearNotif.addEventListener('click', (e) => { e.preventDefault(); App.data && App.data.clearNotifications && App.data.clearNotifications(); });
+        const clearNotif = document.getElementById('clear-notifications-btn');
+        clearNotif.addEventListener('click', (e) => { e.preventDefault(); App.data && App.data.clearNotifications && App.data.clearNotifications(); });
 
         const sendReport = document.getElementById('send-report-make-btn');
         sendReport.addEventListener('click', (e) => { e.preventDefault(); fetch("https://hook.eu2.make.com/elfc4qhgf5v5cuqvf609xv1oelma1u4m", { method: 'POST' }).then(() => alert('Laporan terkirim!')); });
@@ -192,7 +208,6 @@
         exportExcelBtn.addEventListener('click', (e) => { e.preventDefault(); App.data && App.data.exportNotificationsToExcel && App.data.exportNotificationsToExcel(); });
     }
 
-    // tiny helper exposed for slider to push slide values
     function updateSlidesFromData(data) {
         try {
             const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };

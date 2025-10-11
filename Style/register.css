@@ -19,7 +19,7 @@
 .profile-upload-box {
     width: 110px;
     height: 110px;
-    border: 2px dashed #a7b4c4; /* Garis putus-putus */
+    border: 2px dashed rgba(255, 255, 255, 0.4); /* Garis putus-putus */
     border-radius: 50%; /* Membuatnya bulat */
     display: flex;
     align-items: center;
@@ -27,22 +27,22 @@
     cursor: pointer;
     overflow: hidden; /* Sembunyikan gambar yang keluar dari lingkaran */
     position: relative;
-    background-color: #f8f9fa;
+    background-color: rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
 }
 
 .profile-upload-box:hover,
 .profile-upload-box.dragover { /* Gaya saat drag-and-drop */
-    border-color: #0D47A1;
-    background-color: #e9ecef;
+    border-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Ubah dari display:none ke overlay input yang transparan agar klik/drag berfungsi lebih andal */
 .profile-upload-input {
     position: absolute;
     inset: 0;
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
     opacity: 0;
     cursor: pointer;
     border: none;
@@ -65,24 +65,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #6c757d;
+    color: rgba(255, 255, 255, 0.7);
     text-align: center;
     padding: 4px;
     transition: opacity 0.3s ease;
 }
 
 .upload-placeholder i {
-    font-size: 1em; /* smaller icon for smaller circle */
-    margin-bottom: 4px;
+    font-size: 1.5em; /* smaller icon for smaller circle */
+    margin-bottom: 8px;
 }
 
 .upload-placeholder span {
     font-weight: 500;
-    font-size: 0.7em;
+    font-size: 0.8em;
 }
 
 .upload-placeholder small {
-    font-size: 0.6em;
+    font-size: 0.7em;
     opacity: 0.8;
 }
 
@@ -105,7 +105,7 @@
 
 /* Gaya untuk error text */
 .profile-upload-container .error-text {
-    color: #e53935;
+    color: #ffcdd2;
     font-size: 0.85em;
     margin-top: 8px;
     text-align: center;
@@ -117,4 +117,13 @@
 .profile-preview-img:not(.hidden) + .upload-placeholder,
 .upload-placeholder.hidden {
     display: none !important;
+}
+
+/* Teks info untuk tahap upload dan OTP */
+.info-text {
+    color: #ffffff;
+    font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
 }

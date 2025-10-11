@@ -34,23 +34,9 @@
             </div>
         </div>
         <div class="card">
-            <h2>Buat Akun Baru</h2>
-            <form id="registerForm">
+            <h2 id="card-title">Buat Akun Baru</h2>
+            <form id="registerForm" novalidate>
                 <div id="initial-data-group">
-                    <div class="input-container profile-upload-container">
-                        <label for="profileImage" class="profile-upload-box">
-                            <div class="profile-preview-wrapper">
-                                <img id="profilePreview" src="#" alt="Preview Foto Profil" class="profile-preview-img hidden">
-                                <div id="upload-placeholder" class="upload-placeholder">
-                                    <i class="fas fa-camera"></i>
-                                    <span>Unggah Foto Profil</span>
-                                    <small>Seret & lepas atau klik di sini</small>
-                                </div>
-                            </div>
-                        </label>
-                        <input type="file" id="profileImage" accept="image/*" class="profile-upload-input">
-                        <span class="error-text"></span>
-                    </div>
                     <div class="input-container">
                         <i class="fas fa-user"></i><input type="text" id="username" placeholder="Username" required><span class="error-text"></span>
                     </div>
@@ -71,12 +57,32 @@
                         <span class="error-text"></span>
                     </div>
                 </div>
+
+                <div id="upload-group" style="display: none;">
+                    <p class="info-text">Pilih foto profil terbaik Anda untuk melengkapi akun.</p>
+                    <div class="input-container profile-upload-container">
+                        <label for="profileImage" class="profile-upload-box">
+                            <div class="profile-preview-wrapper">
+                                <img id="profilePreview" src="#" alt="Preview Foto Profil" class="profile-preview-img hidden">
+                                <div id="upload-placeholder" class="upload-placeholder">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Unggah Foto Profil</span>
+                                    <small>Seret & lepas atau klik di sini</small>
+                                </div>
+                            </div>
+                        </label>
+                        <input type="file" id="profileImage" accept="image/*" class="profile-upload-input">
+                        <span class="error-text" id="profileImageError"></span>
+                    </div>
+                </div>
+
                 <div id="otp-group" style="display: none;">
-                    <p style="margin-bottom:15px; font-size: 0.9em;">Kami telah mengirimkan kode OTP ke email Anda. Silakan periksa dan masukkan di bawah ini.</p>
+                    <p class="info-text">Kami telah mengirimkan kode OTP ke email Anda. Silakan periksa dan masukkan di bawah ini.</p>
                     <div class="input-container">
                         <i class="fas fa-key"></i><input type="text" id="otp" placeholder="Kode OTP 6 Digit" maxlength="6"><span class="error-text"></span>
                     </div>
                 </div>
+                
                 <button type="submit" id="registerButton" class="login-btn">Lanjutkan</button>
                 <div id="error-message" style="display: none;" ></div>
             </form>
@@ -85,11 +91,10 @@
             </p>
         </div>
     </div>
+    
     <script src="js/firebase-config.js"></script>
     <script src="js/auth/register-utils.js"></script>
     <script>
-        // Configure Cloudinary for client-side unsigned uploads
-        // Replace with your actual cloud name and unsigned upload preset
         window.RegisterApp = window.RegisterApp || {};
         RegisterApp.CLOUDINARY_CLOUD_NAME = 'dca2fjndp';
         RegisterApp.CLOUDINARY_UPLOAD_PRESET = 'dbimage';

@@ -1,4 +1,3 @@
-// Authentication flows (password login, OTP, reset)
 window.LoginApp = window.LoginApp || {};
 (function(ns){
     const db = ns.db;
@@ -53,6 +52,8 @@ window.LoginApp = window.LoginApp || {};
             localStorage.setItem('username', ns.currentUserData.username);
             localStorage.setItem('email', ns.currentUserData.email);
             localStorage.setItem('role', ns.currentUserData.role);
+            localStorage.setItem('profileImageUrl', ns.currentUserData.profileImageUrl || '');
+            
             otpRef.remove();
             window.location.href = 'monitor.html';
         }).catch(error => {

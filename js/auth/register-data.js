@@ -5,7 +5,7 @@ window.RegisterApp = window.RegisterApp || {};
     const GAS = "https://script.google.com/macros/s/AKfycbztdc2p1qUOjYlxUABdb7G4OjvPPvJ1rtTO5p70LHjH8-Fm11VGMNtcD4UBXtthyH9V/exec";
     // Cloudinary config - set your cloud name and unsigned upload preset here
     ns.CLOUDINARY_CLOUD_NAME = ns.CLOUDINARY_CLOUD_NAME || 'dca2fjndp';
-    ns.CLOUDINARY_UPLOAD_PRESET = ns.CLOUDINARY_UPLOAD_PRESET || 'Unsigned';
+    ns.CLOUDINARY_UPLOAD_PRESET = ns.CLOUDINARY_UPLOAD_PRESET || 'dbimage';
 
     ns.checkUniqueAndSendOtp = async function({ username, email, phone, password, profileImageUrl=null }){
         const usersCollection = db.collection('users');

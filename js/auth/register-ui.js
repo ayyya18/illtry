@@ -43,13 +43,28 @@ window.RegisterApp = window.RegisterApp || {};
 
         // Profile image preview
         if (ns.profileImageInput && ns.profilePreviewImg) {
+            // ensure placeholder is available
+            const placeholder = ns.q('#upload-placeholder');
+            let currentObjectUrl = null;
             ns.profileImageInput.addEventListener('change', function(){
                 const file = this.files && this.files[0];
                 if (file) {
+                    // revoke previous object URL if any
+                    if (currentObjectUrl) { URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
                     const url = URL.createObjectURL(file);
-                    ns.profilePreviewImg.src = url; ns.profilePreviewImg.style.display = 'block';
-                } else { ns.profilePreviewImg.src = ''; ns.profilePreviewImg.style.display = 'none'; }
+                    currentObjectUrl = url;
+                    ns.profilePreviewImg.src = url;
+                    ns.profilePreviewImg.classList.remove('hidden');
+                    if (placeholder) placeholder.classList.add('hidden');
+                } else {
+                    if (currentObjectUrl) { URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+                    ns.profilePreviewImg.src = '';
+                    ns.profilePreviewImg.classList.add('hidden');
+                    if (placeholder) placeholder.classList.remove('hidden');
+                }
             });
+            // cleanup on unload
+            window.addEventListener('beforeunload', ()=>{ if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); });
         }
 
         const togglePassword = ns.q('#togglePassword');

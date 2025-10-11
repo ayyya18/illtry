@@ -1,5 +1,120 @@
-.profile-upload{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.profile-preview img{ width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid #ddd; }
-.file-label{ display:inline-flex; align-items:center; gap:8px; background:#f1f1f1; padding:8px 12px; border-radius:6px; cursor:pointer; }
-.file-label input[type=file]{ display:none; }
-.profile-upload .error-text{ display:block; color:#e53935; font-size:0.85em; }
+/* Ganti .profile-upload yang lama dengan ini */
+.profile-upload-container {
+    display: flex;
+    flex-direction: column; /* Agar error text di bawah */
+    align-items: center; /* Pusatkan kotak upload */
+    margin-bottom: 20px; /* Beri jarak lebih */
+    width: 100%;
+    position: relative; /* Untuk overlay input */
+}
+
+/* Lebih spesifik agar tidak mudah dioverride oleh login.css */
+.card .input-container.profile-upload-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Smaller upload circle */
+.profile-upload-box {
+    width: 110px;
+    height: 110px;
+    border: 2px dashed #a7b4c4; /* Garis putus-putus */
+    border-radius: 50%; /* Membuatnya bulat */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden; /* Sembunyikan gambar yang keluar dari lingkaran */
+    position: relative;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.profile-upload-box:hover,
+.profile-upload-box.dragover { /* Gaya saat drag-and-drop */
+    border-color: #0D47A1;
+    background-color: #e9ecef;
+}
+
+/* Ubah dari display:none ke overlay input yang transparan agar klik/drag berfungsi lebih andal */
+.profile-upload-input {
+    position: absolute;
+    inset: 0;
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    z-index: 5; /* Pastikan berada di atas placeholder supaya menerima klik/dnd */
+}
+
+.profile-preview-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tampilan placeholder awal (ikon kamera dan teks) */
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    text-align: center;
+    padding: 4px;
+    transition: opacity 0.3s ease;
+}
+
+.upload-placeholder i {
+    font-size: 1em; /* smaller icon for smaller circle */
+    margin-bottom: 4px;
+}
+
+.upload-placeholder span {
+    font-weight: 500;
+    font-size: 0.7em;
+}
+
+.upload-placeholder small {
+    font-size: 0.6em;
+    opacity: 0.8;
+}
+
+/* Tampilan gambar preview setelah dipilih */
+.profile-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Pastikan gambar mengisi lingkaran tanpa distorsi */
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+/* Kelas utilitas untuk menyembunyikan elemen */
+.hidden {
+    display: none !important;
+}
+
+/* Gaya untuk error text */
+.profile-upload-container .error-text {
+    color: #e53935;
+    font-size: 0.85em;
+    margin-top: 8px;
+    text-align: center;
+    display: block; /* Pastikan error text terlihat */
+    min-height: 1em; /* Beri ruang agar layout tidak bergeser */
+}
+
+/* Jika ingin placeholder menghilang saat preview muncul */
+.profile-preview-img:not(.hidden) + .upload-placeholder,
+.upload-placeholder.hidden {
+    display: none !important;
+}

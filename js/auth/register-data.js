@@ -31,7 +31,10 @@ window.RegisterApp = window.RegisterApp || {};
         if (!res.ok) throw new Error('Gagal mengunggah foto profil.');
         
         const json = await res.json();
-        return json.secure_url || json.url || null;
+        return {
+            url: json.secure_url || json.url,
+            publicId: json.public_id // Menggunakan 'publicId' agar konsisten
+        };
     };
 
     ns.sendOtpForRegistration = async function(userData) {

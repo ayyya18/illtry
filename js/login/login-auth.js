@@ -44,16 +44,18 @@ window.LoginApp = window.LoginApp || {};
         ns.setLoading(true, 'Memverifikasi...');
         const otpRef = database.ref(`otp_requests/${ns.currentUserData.username}`);
         otpRef.once('value').then((snapshot) => {
-            if (!snapshot.exists()) throw new Error('Verifikasi gagal atau sudah kedaluwarsa.');
-            if (snapshot.val().code !== enteredOtp) throw new Error('Kode OTP salah.');
+            if (!snapshot.exists() || snapshot.val().code !== enteredOtp) throw new Error('Kode OTP salah atau kedaluwarsa.');
             if ((new Date().getTime() - snapshot.val().timestamp) > (5 * 60 * 1000)) throw new Error('Kode OTP kedaluwarsa.');
 
+            // PERBAIKAN: Menyimpan SEMUA data yang relevan ke localStorage
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('username', ns.currentUserData.username);
             localStorage.setItem('email', ns.currentUserData.email);
             localStorage.setItem('role', ns.currentUserData.role);
+            localStorage.setItem('phone', ns.currentUserData.phone || '');
             localStorage.setItem('profileImageUrl', ns.currentUserData.profileImageUrl || '');
-            
+            localStorage.setItem('profileImagePublicId', ns.currentUserData.profileImagePublicId || ''); // Simpan publicId
+
             otpRef.remove();
             window.location.href = 'monitor.html';
         }).catch(error => {
@@ -61,7 +63,8 @@ window.LoginApp = window.LoginApp || {};
             ns.setLoading(false, 'Verifikasi OTP');
         });
     };
-
+    
+    // ... sisa kode tidak berubah ...
     ns.handleForgotPasswordEmail = async function(email){
         ns.clearInputError(ns.forgotEmailInput);
         if (!email) { ns.setInputError(ns.forgotEmailInput, 'Email tidak boleh kosong.'); return; }
@@ -79,7 +82,6 @@ window.LoginApp = window.LoginApp || {};
             ns.setLoading(false, 'Kirim OTP');
         }
     };
-
     ns.handleResetPassword = async function(enteredOtp, newPassword, confirmNewPassword){
         ns.clearInputError(ns.otpInput); ns.clearInputError(ns.newPasswordInput); ns.clearInputError(ns.confirmNewPasswordInput);
         let isValid = true;
@@ -93,7 +95,6 @@ window.LoginApp = window.LoginApp || {};
             const snapshot = await otpRef.once('value');
             if (!snapshot.exists()) throw new Error('Verifikasi gagal atau sudah kedaluwarsa.');
             if (snapshot.val().code !== enteredOtp) throw new Error('Kode OTP salah.');
-
             const newHashedPassword = await ns.hashPassword(newPassword, ns.currentUserData.salt);
             await db.collection('users').doc(ns.currentUserKey).update({ hashedPassword: newHashedPassword });
             await otpRef.remove();

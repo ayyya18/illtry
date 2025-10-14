@@ -13,8 +13,6 @@ window.SettingsApp = window.SettingsApp || {};
     ns.otpEmailInfo = ns.q('#otp-email-info');
     ns.submitBtn = ns.q('#submit-btn');
     ns.errorMessage = ns.q('#error-message');
-
-    // Profile picture refs
     ns.profileImageInput = ns.q('#profileImageInput');
     ns.profilePreview = ns.q('#profile-preview');
     ns.avatarPlaceholder = ns.q('#avatar-placeholder');
@@ -26,7 +24,6 @@ window.SettingsApp = window.SettingsApp || {};
     ns.changesToSubmit = {};
     ns.newProfileImageFile = null;
 
-    // Fungsi untuk menampilkan data pengguna di form
     ns.populateUserData = async function(){
         const storedUsername = localStorage.getItem('username');
         if (!storedUsername) {
@@ -34,25 +31,22 @@ window.SettingsApp = window.SettingsApp || {};
             window.location.href = 'index.html';
             return false;
         }
-
         try {
             const res = await ns.getUserByUsername(storedUsername);
             if (!res) {
-                alert('Gagal memuat data pengguna.');
+                alert('Gagal memuat data pengguna dari server.');
                 return false;
             }
-            
             ns.initialUserData = res.data;
             ns.userKeyInput.value = res.key;
             ns.currentUserSalt = ns.initialUserData.salt;
-            
             ns.usernameInput.value = ns.initialUserData.username;
             ns.emailInput.value = ns.initialUserData.email;
             ns.phoneInput.value = ns.initialUserData.phone || '';
 
-            // Tampilkan foto profil yang ada
-            if (ns.initialUserData.profileImageUrl) {
-                ns.profilePreview.src = ns.initialUserData.profileImageUrl;
+            const imageUrl = ns.initialUserData.profileImageUrl;
+            if (imageUrl) {
+                ns.profilePreview.src = imageUrl;
                 ns.profilePreview.style.display = 'block';
                 ns.avatarPlaceholder.style.display = 'none';
             } else {
@@ -67,12 +61,9 @@ window.SettingsApp = window.SettingsApp || {};
         }
     };
 
-    // Fungsi untuk menangani submit form
     ns.handleUpdateSubmission = async function(){
         ns.hideError(ns.errorMessage);
         ns.changesToSubmit = {};
-
-        // Cek perubahan data teks
         if (ns.usernameInput.value.trim() !== ns.initialUserData.username) ns.changesToSubmit.username = ns.usernameInput.value.trim();
         if (ns.emailInput.value.trim().toLowerCase() !== ns.initialUserData.email) ns.changesToSubmit.email = ns.emailInput.value.trim().toLowerCase();
         if (ns.phoneInput.value.trim() !== (ns.initialUserData.phone || '')) ns.changesToSubmit.phone = ns.phoneInput.value.trim();
@@ -83,13 +74,10 @@ window.SettingsApp = window.SettingsApp || {};
             }
             ns.changesToSubmit.password = ns.passwordInput.value;
         }
-        
-        // Cek apakah ada perubahan (termasuk gambar baru)
         if (Object.keys(ns.changesToSubmit).length === 0 && !ns.newProfileImageFile) {
             alert('Tidak ada perubahan yang dibuat.');
             return;
         }
-
         ns.setLoading(ns.submitBtn, true, 'Mengirim OTP...');
         try {
             await ns.sendOtpForUpdate(ns.initialUserData.username, ns.initialUserData.email);
@@ -104,7 +92,6 @@ window.SettingsApp = window.SettingsApp || {};
         }
     };
 
-    // Fungsi untuk verifikasi OTP dan menyimpan semua perubahan
     ns.handleOtpVerification = async function(){
         ns.hideError(ns.errorMessage);
         const enteredOtp = ns.otpInput.value.trim();
@@ -112,7 +99,6 @@ window.SettingsApp = window.SettingsApp || {};
             ns.showError(ns.errorMessage, 'OTP harus 6 digit.');
             return;
         }
-        
         ns.setLoading(ns.submitBtn, true, 'Menyimpan...');
         try {
             const otpRef = ns.database.ref(`otp_requests/${ns.initialUserData.username}`);
@@ -121,27 +107,31 @@ window.SettingsApp = window.SettingsApp || {};
                 throw new Error('Kode OTP salah atau sudah kedaluwarsa.');
             }
 
-            // Jika ada gambar baru, unggah dulu
             if (ns.newProfileImageFile) {
-                const newImageUrl = await ns.uploadProfileImage(ns.newProfileImageFile);
-                ns.changesToSubmit.profileImageUrl = newImageUrl;
+                // Hapus gambar lama jika ada
+                await ns.deleteOldProfileImage(ns.initialUserData.profileImagePublicId);
+                
+                // Unggah gambar baru
+                const uploadResult = await ns.uploadProfileImage(ns.newProfileImageFile);
+                ns.changesToSubmit.profileImageUrl = uploadResult.secure_url;
+                ns.changesToSubmit.profileImagePublicId = uploadResult.public_id;
             }
 
-            // Siapkan data final untuk diupdate
             const finalUpdateData = { ...ns.changesToSubmit };
             if (finalUpdateData.password) {
                 finalUpdateData.hashedPassword = await ns.hashPassword(finalUpdateData.password, ns.currentUserSalt);
                 delete finalUpdateData.password;
             }
 
-            // Update data di Firestore
             const userKey = ns.userKeyInput.value;
             await ns.updateUserInFirestore(userKey, finalUpdateData);
             
-            // Perbarui juga localStorage jika ada perubahan
+            // PERBAIKAN KRITIS: Perbarui localStorage setelah berhasil menyimpan ke Firestore
             if (finalUpdateData.username) localStorage.setItem('username', finalUpdateData.username);
             if (finalUpdateData.email) localStorage.setItem('email', finalUpdateData.email);
+            if (finalUpdateData.phone) localStorage.setItem('phone', finalUpdateData.phone);
             if (finalUpdateData.profileImageUrl) localStorage.setItem('profileImageUrl', finalUpdateData.profileImageUrl);
+            if (finalUpdateData.profileImagePublicId) localStorage.setItem('profileImagePublicId', finalUpdateData.profileImagePublicId);
 
             await otpRef.remove();
             alert('Data berhasil diperbarui!');
@@ -152,7 +142,6 @@ window.SettingsApp = window.SettingsApp || {};
         }
     };
 
-    // Menghubungkan semua event listener
     ns.wireEvents = function(){
         if (ns.settingsForm) {
             ns.settingsForm.addEventListener('submit', async e => {
@@ -164,13 +153,11 @@ window.SettingsApp = window.SettingsApp || {};
                 }
             });
         }
-
-        // Event listener untuk pratinjau gambar
         if (ns.profileImageInput) {
             ns.profileImageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    ns.newProfileImageFile = file; // Simpan file untuk diunggah nanti
+                    ns.newProfileImageFile = file;
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         ns.profilePreview.src = event.target.result;
@@ -183,7 +170,6 @@ window.SettingsApp = window.SettingsApp || {};
         }
     };
 
-    // Inisialisasi halaman
     ns.init = async function(){
         if (localStorage.getItem('isLoggedIn') !== 'true') {
             alert('Anda harus login terlebih dahulu!');
@@ -191,8 +177,6 @@ window.SettingsApp = window.SettingsApp || {};
             return;
         }
         ns.wireEvents();
-        const ok = await ns.populateUserData();
-        if (!ok) return;
+        await ns.populateUserData();
     };
-
 })(window.SettingsApp);

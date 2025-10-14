@@ -1,3 +1,4 @@
+// UI layer: DOM manipulation, dropdowns, menu, and connecting data layer
 (function () {
     const App = window.App = window.App || {};
 
@@ -50,6 +51,7 @@
     }
 
     function wireUI() {
+        // Menu and overlay
         const profileBtn = document.getElementById('profile-btn');
         const sideMenu = document.getElementById('side-menu');
         const closeBtn = document.getElementById('close-btn');
@@ -133,11 +135,12 @@
             });
         });
 
+        // --- PERUBAHAN LOGIKA PROFIL & AUTENTIKASI ---
         const storedUsername = localStorage.getItem('username');
         const storedEmail = localStorage.getItem('email');
         const storedProfileImage = localStorage.getItem('profileImageUrl');
         const userRole = localStorage.getItem('role');
-
+        
         const adminMenuItem = document.getElementById('admin-menu-item');
         if (userRole === 'admin' && adminMenuItem) {
             adminMenuItem.style.display = 'block';
@@ -150,20 +153,27 @@
             if (sideMenuEmail) sideMenuEmail.textContent = storedEmail;
         }
 
+        // Logika baru untuk menampilkan foto profil atau ikon default
         const profileAvatar = document.getElementById('profile-avatar');
         const defaultAvatar = document.getElementById('default-avatar');
-        if (storedProfileImage && storedProfileImage !== 'null') {
+        
+        // Cek apakah URL gambar ada dan bukan string kosong
+        if (storedProfileImage && storedProfileImage.trim() !== '') {
             profileAvatar.src = storedProfileImage;
             profileAvatar.style.display = 'block';
             defaultAvatar.style.display = 'none';
+
+            // Fungsi fallback jika gambar gagal dimuat (misal, URL rusak)
             profileAvatar.onerror = function() {
                 profileAvatar.style.display = 'none';
                 defaultAvatar.style.display = 'block';
             };
         } else {
+            // Jika tidak ada URL, pastikan ikon default yang tampil
             profileAvatar.style.display = 'none';
             defaultAvatar.style.display = 'block';
         }
+        // --- AKHIR PERUBAHAN ---
 
         if (localStorage.getItem("isLoggedIn") !== "true") {
             alert("Anda harus login terlebih dahulu!");

@@ -226,6 +226,21 @@
     align-items: center;
 }
 
+/* Refresh button spacing and appearance */
+#refreshButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px; /* give space from the previous selector */
+    font-size: 1.1em;
+    color: rgba(255,255,255,0.9);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.15s ease, transform 0.12s ease;
+}
+#refreshButton:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
+
 .custom-select-wrapper {
     position: relative;
     display: flex;
@@ -353,7 +368,7 @@
 
 .sensor-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 24px;
     justify-content: center;
 }

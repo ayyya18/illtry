@@ -1,54 +1,63 @@
-window.SettingsApp = window.SettingsApp || {};
+window.RegisterApp = window.RegisterApp || {};
 (function(ns){
-    const db = ns.firestore; // Gunakan Firestore
-    const database = ns.database; // Tetap untuk OTP
+    const db = ns.db;
+    const database = ns.database;
+    const GAS = "https://script.google.com/macros/s/AKfycbztdc2p1qUOjYlxUABdb7G4OjvPPvJ1rtTO5p70LHjH8-Fm11VGMNtcD4UBXtthyH9V/exec";
+    
+    ns.CLOUDINARY_CLOUD_NAME = ns.CLOUDINARY_CLOUD_NAME || 'dca2fjndp';
+    ns.CLOUDINARY_UPLOAD_PRESET = ns.CLOUDINARY_UPLOAD_PRESET || 'dbimage';
 
-    // Fungsi untuk mengambil data user dari FIRESTORE
-    ns.getUserByUsername = async function(username){
-        if (!db) throw new Error('Firestore tidak tersedia');
-        const usersRef = db.collection('users');
-        const snapshot = await usersRef.where('username', '==', username).limit(1).get();
+    ns.checkUniqueData = async function({ username, email }){
+        const usersCollection = db.collection('users');
+        const usernameQuery = await usersCollection.where('username','==',username).get();
+        if (!usernameQuery.empty) throw new Error('Username sudah digunakan.');
         
-        if (snapshot.empty) return null;
-        
-        const userDoc = snapshot.docs[0];
-        return { key: userDoc.id, data: userDoc.data() };
+        const emailQuery = await usersCollection.where('email','==',email).get();
+        if (!emailQuery.empty) throw new Error('Alamat email sudah terdaftar.');
     };
 
-    // Fungsi untuk mengunggah gambar baru ke Cloudinary
     ns.uploadProfileImage = async function(file){
         if (!file) return null;
         const cloudName = ns.CLOUDINARY_CLOUD_NAME;
         const uploadPreset = ns.CLOUDINARY_UPLOAD_PRESET;
-        if (!cloudName || !uploadPreset) throw new Error('Konfigurasi Cloudinary tidak ditemukan.');
+        if (!cloudName || cloudName.includes('<YOUR_')) throw new Error('Cloudinary belum dikonfigurasi pada aplikasi.');
         
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', uploadPreset);
+        const form = new FormData();
+        form.append('file', file);
+        form.append('upload_preset', uploadPreset);
         
-        const response = await fetch(url, { method: 'POST', body: formData });
-        if (!response.ok) throw new Error('Gagal mengunggah foto baru.');
+        const res = await fetch(url, { method: 'POST', body: form });
+        if (!res.ok) throw new Error('Gagal mengunggah foto profil.');
         
-        const data = await response.json();
-        return data.secure_url;
+        const json = await res.json();
+        return json.secure_url || json.url || null;
     };
 
-    // Fungsi untuk mengirim OTP (tidak ada perubahan)
-    ns.sendOtpForUpdate = async function(username, email){
-        if (!ns.GAS_WEB_APP_URL) throw new Error('GAS URL belum dikonfigurasi');
-        const res = await fetch(ns.GAS_WEB_APP_URL, { method:'POST', mode:'cors', body: JSON.stringify({ username, email, type:'update' }) });
-        if (!res.ok) throw new Error('Gagal menghubungi server OTP');
-        const result = await res.json(); 
-        if (result.status !== 'success') throw new Error(result.message || 'Gagal mengirim OTP');
-        return result;
+    ns.sendOtpForRegistration = async function(userData) {
+        const { username, email } = userData;
+        const res = await fetch(GAS, { method: 'POST', mode: 'cors', body: JSON.stringify({ username, email, type: 'registration' }) });
+        if (!res.ok) throw new Error('Gagal menghubungi server OTP.');
+        
+        const result = await res.json();
+        if (result.status !== 'success') throw new Error(result.message || 'Gagal mengirim OTP.');
+        
+        const salt = crypto.randomUUID();
+        const hashedPassword = await ns.hashPassword(userData.password, salt);
+        
+        return { ...userData, hashedPassword, salt, role: 'user' };
+    };
+    
+    ns.verifyAndCreateUser = async function(temporaryUserData, enteredOtp){
+        const otpRef = database.ref(`registration_otps/${temporaryUserData.username}`);
+        const snapshot = await otpRef.once('value');
+        if (!snapshot.exists() || snapshot.val().code !== enteredOtp) throw new Error('Kode OTP salah atau kedaluwarsa.');
+
+        const finalUserData = { ...temporaryUserData };
+        delete finalUserData.password;
+
+        await db.collection('users').add(finalUserData);
+        await otpRef.remove();
     };
 
-    // Fungsi untuk update data di FIRESTORE
-    ns.updateUserInFirestore = async function(userKey, updateData) {
-        if (!db) throw new Error('Firestore tidak tersedia');
-        const userRef = db.collection('users').doc(userKey);
-        await userRef.update(updateData);
-    };
-
-})(window.SettingsApp);
+})(window.RegisterApp);

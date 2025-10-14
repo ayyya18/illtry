@@ -1,28 +1,7 @@
-/* --- Reset Dasar & Font --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* --- Latar Belakang Dinamis (Diambil dari monitoring.css) --- */
-body {
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    background: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
-    background-size: 400% 400%;
-    animation: gradientAnimation 20s ease-in-out infinite;
-}
-
-@keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+/* Page-specific rules for login form */
+/* Body/background handled in Style/base.css via body.app-bg-centered or body.app-bg-top */
+body.app-bg-centered .container { max-width: 1000px; max-height: 650px; }
+body.app-bg-centered .card { padding: 40px; }
 
 .container {
     width: 100%;

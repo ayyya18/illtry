@@ -1,22 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    background: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
-    background-size: 400% 400%;
-    animation: gradientAnimation 20s ease-in-out infinite;
-}
+/* Monitor page styles; shared reset and fonts/background moved to Style/base.css */
 
 /* --- BAGIAN SLIDER YANG DIPERBAIKI --- */
 .temp-slider {

@@ -1,0 +1,44 @@
+/* components.css - shared UI components and patterns */
+
+/* Card sizing helpers */
+.card.small{ padding:16px; }
+.card.medium{ padding:30px; }
+.card.large{ padding:40px; }
+
+/* Slider basic styles used by multiple pages */
+.slides{ display:flex; width:100%; transition:transform 0.5s ease-in-out; }
+.slide{ flex:0 0 100%; }
+.slider-dots{ display:flex; gap:10px; }
+.dot{ width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.5); }
+.dot.active{ background:#ffffff; }
+
+/* Upload/avatar components */
+.profile-upload-container{ display:flex; flex-direction:column; align-items:center; }
+.profile-upload-box{ width:110px; height:110px; border-radius:50%; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+.profile-upload-box .upload-placeholder{ color:rgba(255,255,255,0.7); text-align:center; }
+.profile-preview-img{ width:100%; height:100%; object-fit:cover; border-radius:50%; position:absolute; top:0; left:0; }
+.profile-upload-input{ position:absolute; inset:0; opacity:0; cursor:pointer; z-index:5; }
+
+/* Modal */
+.modal{ position:fixed; left:0; top:0; width:100%; height:100%; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:1000; }
+.modal.active{ display:flex; }
+.modal-content{ width:90%; max-width:560px; border-radius:20px; padding:24px; }
+
+/* Tables */
+.table-container{ overflow-x:auto; }
+table{ width:100%; border-collapse:collapse; }
+th, td{ padding:12px; text-align:left; }
+
+/* common buttons and small helpers */
+.action-btn{ padding:10px 16px; border-radius:12px; }
+.add-btn{ background:#ffffff; color:#1976D2; }
+.save-btn{ background:#ffffff; color:#1976D2; }
+.back-btn{ background:transparent; border:1px solid rgba(255,255,255,0.5); color:#fff; }
+
+/* dropdown custom */
+.custom-select-wrapper{ position:relative; }
+.custom-select-trigger{ min-width:200px; padding:10px 20px 10px 45px; border-radius:25px; }
+.custom-options{ position:absolute; top:calc(100% + 10px); left:0; width:100%; max-height:260px; overflow:auto; z-index:1000; }
+
+/* responsive tweaks */
+@media (max-width:720px){ .profile-upload-box{ width:90px; height:90px; } }

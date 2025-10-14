@@ -1,0 +1,78 @@
+/* base.css - shared resets, typography, layout, common components */
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Typography */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html, body { height: 100%; }
+body {
+  font-family: 'Poppins', sans-serif;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Shared background gradient used across pages */
+:root{
+  --primary-gradient: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
+}
+
+html, body { height: 100%; }
+
+/* Background modes: apply per-page via body class */
+body.app-bg-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: var(--primary-gradient);
+  background-size: 400% 400%;
+  animation: gradientAnimation 20s ease-in-out infinite;
+  background-repeat: no-repeat;
+}
+
+body.app-bg-top {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: var(--primary-gradient);
+  background-size: 400% 400%;
+  animation: gradientAnimation 20s ease-in-out infinite;
+  background-repeat: no-repeat;
+}
+
+@keyframes gradientAnimation{ 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+
+/* Layout containers */
+.container{ width:100%; max-width: 1200px; }
+.card{ background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border:1px solid rgba(255,255,255,0.2); box-shadow:0 8px 32px rgba(0,0,0,0.2); border-radius:28px; }
+.card.no-shadow{ box-shadow:none; border:none; }
+.card-header{ display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:16px; margin-bottom:20px; }
+
+/* Buttons */
+.button, .login-btn, .save-btn, .action-btn{ background:#ffffff; color:#1976D2; padding:10px 16px; border:none; border-radius:15px; cursor:pointer; font-weight:600; font-family:'Poppins',sans-serif; }
+.button.ghost, .back-btn{ background:transparent; border:1px solid rgba(255,255,255,0.5); color:#ffffff; }
+.button:hover{ transform:scale(1.02); }
+
+/* Form inputs */
+.input-container{ position:relative; margin-bottom:18px; }
+.input-container i{ position:absolute; left:15px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.7); }
+input[type="text"], input[type="email"], input[type="password"], input[type="tel"], select, textarea{ width:100%; padding:12px 14px 12px 45px; border-radius:12px; border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.06); color:#fff; font-size:1em; }
+input::placeholder{ color: rgba(255,255,255,0.7); }
+input:focus, select:focus, textarea:focus{ outline:none; border-color: rgba(255,255,255,0.45); background:rgba(255,255,255,0.08); }
+
+/* Utilities */
+.hidden{ display:none !important; }
+.text-center{ text-align:center; }
+.mt-1{ margin-top:8px; }
+.mt-2{ margin-top:16px; }
+.mb-1{ margin-bottom:8px; }
+.error-text{ color:#ffcdd2; font-size:0.85em; padding-left:6px; display:block; min-height:1em; }
+.info-text{ font-size:0.95em; color:#ffffff; text-align:center; }
+
+/* Small responsive tweaks */
+@media (max-width:720px){ .card{ border-radius:18px; padding:20px; } .container{ padding:0 12px; } }

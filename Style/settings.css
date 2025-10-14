@@ -1,15 +1,7 @@
-/* --- Reset Dasar & Latar Belakang --- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: 'Poppins', sans-serif;
-    display: flex; justify-content: center; align-items: flex-start;
-    min-height: 100vh; padding: 40px 20px;
-    background: linear-gradient(135deg, #0D47A1, #1976D2, #6A1B9A, #D81B60);
-    background-size: 400% 400%; animation: gradientAnimation 20s ease-in-out infinite;
-    color: #ffffff;
-}
-@keyframes gradientAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
+/* Settings specific styles; base reset/background in Style/base.css */
+/* Maintain previous layout for settings page */
+.container { width: 100%; max-width: 600px; }
+.card { padding: 30px 40px 30px 40px; }
 /* --- Container & Card Utama --- */
 .container { 
     width: 100%; 

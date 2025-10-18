@@ -12,9 +12,7 @@ window.ChartApp = window.ChartApp || {};
             return;
         }
         
-        // Perbaikan: Pastikan label waktu konsisten (misal: 'HH:mm')
-        // const labels = chartData.map(item => Array.isArray(item.time) ? item.time[0] : item.time); 
-        const labels = chartData.map(item => item.time); // Gunakan format waktu dari GAS
+        const labels = chartData.map(item => item.time); 
         const values = chartData.map(item => item.value);
 
         if (ns._chart) ns._chart.destroy();
@@ -30,7 +28,7 @@ window.ChartApp = window.ChartApp || {};
                     borderColor: 'rgba(54,162,235,1)',
                     backgroundColor: 'rgba(54,162,235,0.2)',
                     borderWidth: 2,
-                    pointRadius: 3, // Sedikit lebih besar agar terlihat saat zoom out
+                    pointRadius: 3, 
                     tension: 0.3,
                     fill: true
                 }]
@@ -42,13 +40,14 @@ window.ChartApp = window.ChartApp || {};
                     x: { ticks: { color: '#fff' } },
                     y: { ticks: { color: '#fff' } }
                 },
-                // --- AKTIFKAN PLUGIN ZOOM & PAN DI SINI ---
+                // --- PERBAIKAN DI SINI: MENAMBAHKAN KONFIGURASI PLUGIN ZOOM ---
                 plugins: {
                     legend: { labels: { color: '#fff' } },
-                    zoom: {
+                    zoom: { // <-- Blok konfigurasi plugin
                         pan: {
                             enabled: true,      // Aktifkan mode geser (pan)
                             mode: 'x',          // Hanya geser secara horizontal
+                            threshold: 10,      // Jarak minimum drag sebelum pan dimulai (opsional)
                         },
                         zoom: {
                             wheel: { enabled: true },  // Aktifkan zoom dengan roda mouse
@@ -57,6 +56,7 @@ window.ChartApp = window.ChartApp || {};
                         }
                     }
                 }
+                // --- AKHIR PERBAIKAN ---
             }
         });
     };

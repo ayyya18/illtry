@@ -4,24 +4,21 @@ window.ChartApp = window.ChartApp || {};
     ns.showLoading = (spinner, canvas) => { if (spinner) spinner.style.display = 'block'; if (canvas) canvas.style.opacity = '0.3'; };
     ns.hideLoading = (spinner, canvas) => { if (spinner) spinner.style.display = 'none'; if (canvas) canvas.style.opacity = '1'; };
 
+    ns.lastRawData = null; // Tetap simpan data mentah
+    ns.currentChartData = null; // Simpan data yang sedang ditampilkan
+
     ns.renderChart = function(canvas, chartData, label){
         if (!canvas) return;
 
-        // Kosongkan grafik jika tidak ada data
+        ns.currentChartData = chartData; // Simpan data yang dirender
+
         if (!chartData || chartData.length === 0) {
             if (ns._chart) { ns._chart.destroy(); ns._chart = null; }
-            // Tampilkan pesan di area canvas jika mau
-            // const ctx = canvas.getContext('2d');
-            // ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            // ctx.textAlign = 'center';
-            // ctx.fillText("Tidak ada data untuk ditampilkan.", canvas.width / 2, canvas.height / 2);
-            alert('Tidak ada data yang ditemukan untuk filter yang dipilih.'); // Tetap pakai alert
+            alert('Tidak ada data yang ditemukan untuk filter yang dipilih.');
             return;
         }
-        
-        // Asumsi format 'time' adalah array [HH:mm, dd MMM] dari GAS Anda
-        const labels = chartData.map(item => Array.isArray(item.time) ? item.time[0] : item.time); // Ambil bagian HH:mm
+
+        const labels = chartData.map(item => Array.isArray(item.time) ? item.time[0] : item.time);
         const values = chartData.map(item => item.value);
 
         if (ns._chart) ns._chart.destroy();
@@ -37,7 +34,7 @@ window.ChartApp = window.ChartApp || {};
                     borderColor: 'rgba(54,162,235,1)',
                     backgroundColor: 'rgba(54,162,235,0.2)',
                     borderWidth: 2,
-                    pointRadius: 3, 
+                    pointRadius: 3,
                     tension: 0.3,
                     fill: true
                 }]
@@ -51,12 +48,14 @@ window.ChartApp = window.ChartApp || {};
                 },
                 plugins: {
                     legend: { labels: { color: '#fff' } },
-                    zoom: { // <-- Konfigurasi Plugin
+                    zoom: {
+                        // --- KONFIGURASI PANNING (GESER) ADA DI SINI ---
                         pan: {
-                            enabled: true,
-                            mode: 'x',
-                            threshold: 5,
+                            enabled: true,  // <-- PASTIKAN INI TRUE
+                            mode: 'x',      // <-- Geser hanya horizontal
+                            threshold: 5,   // <-- Sensitivitas drag (opsional)
                         },
+                        // --- Konfigurasi Zoom ---
                         zoom: {
                             wheel: { enabled: true },
                             pinch: { enabled: true },

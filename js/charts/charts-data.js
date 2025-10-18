@@ -1,7 +1,6 @@
 window.ChartApp = window.ChartApp || {};
 (function(ns){
-    // Variabel untuk menyimpan data mentah terakhir kali diambil
-    ns.lastRawData = null;
+    ns.lastRawData = null; // Tetap simpan data mentah
 
     ns.fetchChartData = async function({ location, dataType, range } = {}){
         const base = ns.GOOGLE_SHEET_WEB_APP_URL || '';
@@ -12,17 +11,23 @@ window.ChartApp = window.ChartApp || {};
         if (!location || !dataType || !range) {
             throw new Error("Parameter tidak lengkap (dibutuhkan: location, dataType, range).");
         }
-        
-        // Gunakan parameter dataType yang sesuai dengan input GAS (e.g., suhuUdara)
-        // Kita perlu memetakan kembali nilai dropdown HTML ke kunci parameter GAS
+
+        // --- PERBAIKAN UTAMA DI SINI ---
+        // Panggil fungsi pemetaan BARU untuk mendapatkan parameter yang benar untuk GAS
         const gasDataTypeParam = mapHtmlValueToGasParam(dataType);
         if (!gasDataTypeParam) {
-            throw new Error(`Tipe data tidak valid: ${dataType}`);
+            // Jika pemetaan gagal, gunakan nilai asli sebagai fallback (sesuai GAS lama)
+            // Atau berikan error jika nilai asli tidak valid
+             console.warn(`Pemetaan dataType gagal untuk: '${dataType}'. Mencoba menggunakan nilai asli.`);
+             // throw new Error(`Tipe data dropdown tidak valid: ${dataType}`); // Alternatif jika ingin error
         }
+        // Kirim parameter yang sudah dipetakan (atau nilai asli jika pemetaan gagal)
+        const finalDataTypeParam = gasDataTypeParam || dataType;
+        // --- AKHIR PERBAIKAN ---
 
-        const url = `${base}?range=${encodeURIComponent(range)}&dataType=${encodeURIComponent(gasDataTypeParam)}&location=${encodeURIComponent(location)}`;
-        
-        console.log("Fetching data from:", url); // Log URL untuk debugging
+        const url = `${base}?range=${encodeURIComponent(range)}&dataType=${encodeURIComponent(finalDataTypeParam)}&location=${encodeURIComponent(location)}`;
+
+        console.log("Fetching data from:", url);
 
         try {
             const res = await fetch(url);
@@ -31,34 +36,34 @@ window.ChartApp = window.ChartApp || {};
                 try { const errorJson = await res.json(); errorMsg = errorJson.message || errorMsg; } catch (e) {}
                 throw new Error(errorMsg);
             }
-            
+
             const result = await res.json();
             if (result.status !== 'success') {
+                // Tambahkan detail error dari GAS jika ada
                 throw new Error(result.message || 'Gagal memuat data grafik dari Apps Script.');
             }
 
-            // Simpan data mentah yang diterima dari GAS
-            ns.lastRawData = result.data || []; 
-            
-            // Kembalikan hasil lengkap termasuk label dari GAS
-            return result; 
+            ns.lastRawData = result.data || [];
+            return result;
 
         } catch (error) {
             console.error("Error fetching chart data:", error);
-            ns.lastRawData = null; // Reset data mentah jika gagal
+            ns.lastRawData = null;
             throw error;
         }
     };
 
-    // Fungsi bantuan untuk memetakan nilai dropdown HTML ke parameter GAS
+    // Fungsi BANTUAN BARU untuk memetakan data-value HTML ke kunci parameter GAS
     function mapHtmlValueToGasParam(htmlValue) {
-        // Pemetaan ini HARUS SESUAI dengan data-value di HTML dan KUNCI di getColumnHeader GAS Anda
+        // Pemetaan ini HARUS sesuai:
+        // Kiri (key): Nilai data-value di charts.html
+        // Kanan (value): Kunci yang dikenali oleh getColumnHeader di GAS Anda
         const map = {
             'Suhu Udara (°C)': 'suhuUdara',
             'Kecepatan Angin (km/h)': 'kecepatanAngin',
             'Kelembaban Udara (%)': 'kelembabanUdara',
-            'Suhu Tanah (°C)': 'temperature',
-            'Kelembaban Tanah (%)': 'humidity',
+            'Suhu Tanah (°C)': 'temperature', // Perhatikan, di GAS 'temperature'
+            'Kelembaban Tanah (%)': 'humidity', // Perhatikan, di GAS 'humidity'
             'Level Air (mm)': 'waterlevel',
             'pH Tanah': 'phTanah',
             'Intensitas Cahaya (lux)': 'lightIntensity',
@@ -68,10 +73,7 @@ window.ChartApp = window.ChartApp || {};
             'Dissolved O2 (mg/L)': 'dissolvedO2',
             'Salinitas (ppt)': 'salinitas'
         };
-        // Cari berdasarkan nilai teks header (yang ada di data-value HTML)
-        return Object.keys(map).find(key => map[key] === Object.keys(map).find(k => k === htmlValue)) 
-               ? map[htmlValue] // Jika htmlValue cocok dengan header, kembalikan kuncinya
-               : null; // Atau kembalikan null jika tidak ditemukan
+        return map[htmlValue] || null; // Kembalikan kunci GAS atau null jika tidak cocok
     }
 
 })(window.ChartApp);

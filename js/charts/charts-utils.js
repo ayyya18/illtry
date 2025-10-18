@@ -12,7 +12,9 @@ window.ChartApp = window.ChartApp || {};
             return;
         }
         
-        const labels = chartData.map(item => item.time);
+        // Perbaikan: Pastikan label waktu konsisten (misal: 'HH:mm')
+        // const labels = chartData.map(item => Array.isArray(item.time) ? item.time[0] : item.time); 
+        const labels = chartData.map(item => item.time); // Gunakan format waktu dari GAS
         const values = chartData.map(item => item.value);
 
         if (ns._chart) ns._chart.destroy();
@@ -28,7 +30,7 @@ window.ChartApp = window.ChartApp || {};
                     borderColor: 'rgba(54,162,235,1)',
                     backgroundColor: 'rgba(54,162,235,0.2)',
                     borderWidth: 2,
-                    pointRadius: 3,
+                    pointRadius: 3, // Sedikit lebih besar agar terlihat saat zoom out
                     tension: 0.3,
                     fill: true
                 }]
@@ -40,7 +42,7 @@ window.ChartApp = window.ChartApp || {};
                     x: { ticks: { color: '#fff' } },
                     y: { ticks: { color: '#fff' } }
                 },
-                // --- 3. AKTIFKAN PLUGIN ZOOM & PAN DI SINI ---
+                // --- AKTIFKAN PLUGIN ZOOM & PAN DI SINI ---
                 plugins: {
                     legend: { labels: { color: '#fff' } },
                     zoom: {

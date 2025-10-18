@@ -108,16 +108,28 @@ window.ChartApp = window.ChartApp || {};
         window.addEventListener('click', () => {
             document.querySelectorAll('.custom-options.active').forEach(el => el.classList.remove('active'));
         });
-
         // Fungsikan Tombol Zoom
         ns.zoomInBtn.addEventListener('click', () => ns._chart?.zoom(1.1));
         ns.zoomOutBtn.addEventListener('click', () => ns._chart?.zoom(0.9));
         ns.zoomResetBtn.addEventListener('click', () => {
              console.log("Reset Zoom clicked");
              ns.loadChartData(true); // Muat ulang data (filter harian) DAN reset zoom
+        ns.panLeftBtn.addEventListener('click', () => {
+            if (ns._chart) {
+                // Geser ke kiri sebanyak 100 piksel
+                ns._chart.pan({ x: 100 }, undefined, 'default');
+            }
         });
+        ns.panRightBtn.addEventListener('click', () => {
+            if (ns._chart) {
+                // Geser ke kanan sebanyak 100 piksel
+                ns._chart.pan({ x: -100 }, undefined, 'default');
+            }
+        });
+        });
+        
     };
-
+    
     ns.init = function(){
         if (localStorage.getItem('isLoggedIn') !== 'true') {
             alert('Anda harus login terlebih dahulu!');

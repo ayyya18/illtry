@@ -19,64 +19,48 @@ window.ChartApp = window.ChartApp || {};
      */
     function filterDataForLatestDay(rawData) {
         if (!rawData || rawData.length === 0) return [];
-
         let latestDateStr = "";
-        // Cari tanggal terakhir dari data (format 'dd MMM')
-        // Iterasi dari belakang untuk efisiensi
-        for (let i = rawData.length - 1; i >= 0; i--) {
-            if (Array.isArray(rawData[i].time) && rawData[i].time.length === 2) {
-                latestDateStr = rawData[i].time[1]; // Ambil 'dd MMM'
-                break; // Hentikan setelah tanggal terakhir ditemukan
+        try {
+            // Cari tanggal terakhir dari data (format 'dd MMM')
+            for (let i = rawData.length - 1; i >= 0; i--) {
+                if (Array.isArray(rawData[i]?.time) && rawData[i].time.length === 2) {
+                    latestDateStr = rawData[i].time[1]; // Ambil 'dd MMM'
+                    break;
+                }
             }
-        }
+        } catch(e) { /* Abaikan jika error saat mencari tanggal */ }
 
         if (!latestDateStr) {
-            console.warn("Tidak dapat menentukan tanggal terakhir dari data GAS. Menampilkan semua data.");
-            return rawData; // Kembalikan semua jika format salah atau tidak ditemukan
+            console.warn("Format waktu tidak terduga atau tidak ada data hari ini. Menampilkan semua data yang diterima.");
+            return rawData; // Kembalikan semua jika format salah/tanggal tak ditemukan
         }
-
         console.log("Memfilter data untuk tanggal terakhir:", latestDateStr);
-
-        // Filter data yang cocok dengan tanggal terakhir
         return rawData.filter(item =>
-            Array.isArray(item.time) && item.time.length === 2 && item.time[1] === latestDateStr
+            Array.isArray(item?.time) && item.time.length === 2 && item.time[1] === latestDateStr
         );
     }
 
     ns.loadChartData = async function(isReset = false){
         ns.showLoading(ns.loadingSpinner, ns.dataChartCanvas);
         try {
-            // 1. Ambil data mentah (potensial > 1 hari) dari GAS
-            // fetchChartData menyimpan data mentah ke ns.lastRawData
+            // 1. Ambil data dari GAS (GAS SUDAH melakukan sampling berdasarkan currentFilters.range)
             const resultFromGAS = await ns.fetchChartData(ns.currentFilters);
+            ns.lastRawData = resultFromGAS.data || []; // Simpan data yang sudah disampling GAS
 
-            // 2. Filter data mentah untuk mendapatkan data HARI TERAKHIR saja
-            const dailyData = filterDataForLatestDay(ns.lastRawData);
+            // 2. Filter data yang diterima dari GAS hanya untuk hari terakhir
+            const dailySampledData = filterDataForLatestDay(ns.lastRawData);
 
-            // 3. TERAPKAN SAMPLING INTERVAL (range) pada DATA HARIAN
-            let processedData = dailyData; // Mulai dengan data harian
-            const range = ns.currentFilters.range;
-            
-            if (range !== 'all') {
-                const interval = parseInt(range, 10);
-                if (!isNaN(interval) && interval > 0 && dailyData.length > 0) {
-                    // Logika sampling: Ambil data pertama, lalu setiap 'interval' data berikutnya
-                    processedData = dailyData.filter((_, index) => index % interval === 0);
-                     console.log(`Sampling data harian (Jumlah: ${dailyData.length}) dengan interval ${interval}, hasil: ${processedData.length} titik.`);
-                } else {
-                     console.log("Range 'all' dipilih atau interval tidak valid, menampilkan semua data harian.");
-                     processedData = dailyData; // Jika 'all' atau interval tidak valid, pakai semua data harian
-                }
-            } else {
-                 console.log("Range 'all' dipilih, menampilkan semua data harian.");
-                 processedData = dailyData; // Jika 'all', pakai semua data harian
-            }
+            // --- PERBAIKAN UTAMA: HAPUS SAMPLING CLIENT-SIDE ---
+            // 3. Langsung gunakan data harian yang sudah disampling oleh GAS
+            const processedData = dailySampledData;
+            console.log(`Menggunakan data harian (Jumlah: ${dailySampledData.length}) yang sudah di-sampling oleh GAS.`);
+            // --- AKHIR PERBAIKAN ---
 
             // 4. Siapkan label dan render grafik
-            const chartLabel = `${resultFromGAS.label} - ${ns.currentFilters.location} (${dailyData.length > 0 && Array.isArray(dailyData[0].time) ? dailyData[0].time[1] : 'Hari Terakhir'})`; // Tambahkan tanggal ke label
+            const chartLabel = `${resultFromGAS.label} - ${ns.currentFilters.location} (${dailySampledData.length > 0 && Array.isArray(dailySampledData[0]?.time) ? dailySampledData[0].time[1] : 'Hari Terakhir'})`;
             ns.renderChart(ns.dataChartCanvas, processedData, chartLabel);
 
-            // 5. Reset zoom jika diminta (setelah rendering)
+            // 5. Reset zoom jika diminta
             if (isReset && ns._chart) {
                 setTimeout(() => ns._chart?.resetZoom(), 100);
             }
@@ -130,7 +114,7 @@ window.ChartApp = window.ChartApp || {};
         ns.zoomOutBtn.addEventListener('click', () => ns._chart?.zoom(0.9));
         ns.zoomResetBtn.addEventListener('click', () => {
              console.log("Reset Zoom clicked");
-             ns.loadChartData(true); // Muat ulang data (filter harian + sampling) DAN reset zoom
+             ns.loadChartData(true); // Muat ulang data (filter harian) DAN reset zoom
         });
     };
 

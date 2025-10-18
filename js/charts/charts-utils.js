@@ -6,13 +6,22 @@ window.ChartApp = window.ChartApp || {};
 
     ns.renderChart = function(canvas, chartData, label){
         if (!canvas) return;
+
+        // Kosongkan grafik jika tidak ada data
         if (!chartData || chartData.length === 0) {
             if (ns._chart) { ns._chart.destroy(); ns._chart = null; }
-            alert('Tidak ada data yang ditemukan untuk filter yang dipilih.');
+            // Tampilkan pesan di area canvas jika mau
+            // const ctx = canvas.getContext('2d');
+            // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            // ctx.textAlign = 'center';
+            // ctx.fillText("Tidak ada data untuk ditampilkan.", canvas.width / 2, canvas.height / 2);
+            alert('Tidak ada data yang ditemukan untuk filter yang dipilih.'); // Tetap pakai alert
             return;
         }
         
-        const labels = chartData.map(item => item.time); 
+        // Asumsi format 'time' adalah array [HH:mm, dd MMM] dari GAS Anda
+        const labels = chartData.map(item => Array.isArray(item.time) ? item.time[0] : item.time); // Ambil bagian HH:mm
         const values = chartData.map(item => item.value);
 
         if (ns._chart) ns._chart.destroy();
@@ -40,23 +49,21 @@ window.ChartApp = window.ChartApp || {};
                     x: { ticks: { color: '#fff' } },
                     y: { ticks: { color: '#fff' } }
                 },
-                // --- PERBAIKAN DI SINI: MENAMBAHKAN KONFIGURASI PLUGIN ZOOM ---
                 plugins: {
                     legend: { labels: { color: '#fff' } },
-                    zoom: { // <-- Blok konfigurasi plugin
+                    zoom: { // <-- Konfigurasi Plugin
                         pan: {
-                            enabled: true,      // Aktifkan mode geser (pan)
-                            mode: 'x',          // Hanya geser secara horizontal
-                            threshold: 10,      // Jarak minimum drag sebelum pan dimulai (opsional)
+                            enabled: true,
+                            mode: 'x',
+                            threshold: 5,
                         },
                         zoom: {
-                            wheel: { enabled: true },  // Aktifkan zoom dengan roda mouse
-                            pinch: { enabled: true },   // Aktifkan zoom dengan cubit (layar sentuh)
-                            mode: 'x',          // Hanya zoom secara horizontal
+                            wheel: { enabled: true },
+                            pinch: { enabled: true },
+                            mode: 'x',
                         }
                     }
                 }
-                // --- AKHIR PERBAIKAN ---
             }
         });
     };

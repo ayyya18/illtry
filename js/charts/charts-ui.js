@@ -9,20 +9,65 @@ window.ChartApp = window.ChartApp || {};
 
     ns.currentFilters = {
         location: 'surabaya',
-        dataType: 'Suhu Udara (°C)', // Sesuaikan dengan nilai awal dropdown Anda
+        dataType: 'Suhu Udara (°C)', // Harus cocok dengan data-value awal di HTML
         range: '5'
     };
 
-    ns.loadChartData = async function(){
+    /**
+     * Fungsi untuk memfilter data mentah hanya untuk hari terakhir.
+     * Asumsi format waktu dari GAS adalah array [HH:mm, dd MMM].
+     */
+    function filterDataForLatestDay(rawData) {
+        if (!rawData || rawData.length === 0) return [];
+
+        // Cari tanggal terakhir (format 'dd MMM') dari data
+        let latestDateStr = "";
+        if (Array.isArray(rawData[rawData.length - 1].time) && rawData[rawData.length - 1].time.length === 2) {
+             latestDateStr = rawData[rawData.length - 1].time[1]; // Ambil 'dd MMM' dari data terakhir
+        } else {
+            console.warn("Format waktu tidak terduga dari GAS, tidak dapat memfilter harian.");
+            return rawData; // Kembalikan semua jika format salah
+        }
+       
+        // Filter data yang cocok dengan tanggal terakhir
+        return rawData.filter(item => 
+            Array.isArray(item.time) && item.time.length === 2 && item.time[1] === latestDateStr
+        );
+    }
+
+    ns.loadChartData = async function(isReset = false){
         ns.showLoading(ns.loadingSpinner, ns.dataChartCanvas);
         try {
-            // Pastikan filter dataType dikirim dengan benar ke fetchChartData
-            const result = await ns.fetchChartData(ns.currentFilters);
-            // Gunakan label dari respons Apps Script
-            const chartLabel = `${result.label} - ${ns.currentFilters.location}`;
-            ns.renderChart(ns.dataChartCanvas, result.data, chartLabel);
+            // 1. Ambil data (potensial > 1 hari) dari GAS
+            // fetchChartData akan menyimpan data mentah ke ns.lastRawData
+            const resultFromGAS = await ns.fetchChartData(ns.currentFilters); 
+
+            // 2. Filter data mentah untuk mendapatkan data hari terakhir saja
+            const dailyData = filterDataForLatestDay(ns.lastRawData);
+
+            // 3. Terapkan sampling interval (range) HANYA pada data harian
+            let processedData = dailyData;
+            const range = ns.currentFilters.range;
+            if (range !== 'all') {
+                const interval = parseInt(range, 10);
+                if (!isNaN(interval) && interval > 1 && dailyData.length > 0) {
+                     // Filter dengan interval, pastikan indeks 0 selalu masuk
+                    processedData = dailyData.filter((_, index) => index === 0 || index % interval === 0);
+                }
+            }
+            
+            // 4. Siapkan label dan render grafik
+            const chartLabel = `${resultFromGAS.label} - ${ns.currentFilters.location} (Hari Terakhir)`;
+            ns.renderChart(ns.dataChartCanvas, processedData, chartLabel);
+            
+            // 5. Reset zoom jika diminta (setelah rendering)
+            if (isReset && ns._chart) {
+                // Beri sedikit waktu agar chart selesai render sebelum reset zoom
+                setTimeout(() => ns._chart?.resetZoom(), 100); 
+            }
+
         } catch (err) {
-            alert(err.message || 'Terjadi error saat memuat data.');
+            alert(err.message || 'Terjadi error saat memuat atau memproses data.');
             if (ns._chart) { ns._chart.destroy(); ns._chart = null; } // Bersihkan grafik jika error
         } finally {
             ns.hideLoading(ns.loadingSpinner, ns.dataChartCanvas);
@@ -35,34 +80,32 @@ window.ChartApp = window.ChartApp || {};
             const trigger = wrapper.querySelector('.custom-select-trigger');
             const optionsContainer = wrapper.querySelector('.custom-options');
             
-            // Event listener untuk membuka/menutup dropdown
             trigger.addEventListener('click', (e) => {
-                e.stopPropagation(); // Hentikan event agar tidak langsung menutup
+                e.stopPropagation();
                 const isActive = optionsContainer.classList.contains('active');
-                // Tutup semua dropdown lain dulu
                 document.querySelectorAll('.custom-options.active').forEach(el => {
                     if (el !== optionsContainer) el.classList.remove('active');
                 });
-                // Toggle dropdown yang diklik
                 optionsContainer.classList.toggle('active');
             });
 
-            // Event listener untuk memilih opsi
             optionsContainer.querySelectorAll('.custom-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    // Update tampilan dropdown
-                    this.parentElement.querySelector('.active')?.classList.remove('active');
+                    const currentActive = this.parentElement.querySelector('.active');
+                    if(currentActive) currentActive.classList.remove('active');
                     this.classList.add('active');
-                    trigger.textContent = this.textContent.trim(); // Ambil teks dari span
+                    
+                    // Update teks trigger
+                    trigger.textContent = this.querySelector('span') ? this.querySelector('span').textContent : this.textContent.trim();
                     optionsContainer.classList.remove('active'); // Tutup dropdown
 
                     // Update filter dan muat ulang data
-                    const filterType = wrapper.id.replace('-filter', ''); // 'location', 'data-type', 'time-range'
+                    const filterType = wrapper.id.replace('-filter', '');
                     const key = filterType === 'time-range' ? 'range' : filterType === 'data-type' ? 'dataType' : filterType;
                     ns.currentFilters[key] = this.getAttribute('data-value');
                     
-                    console.log("Filters updated:", ns.currentFilters); // Debugging
-                    ns.loadChartData();
+                    console.log("Filters updated:", ns.currentFilters);
+                    ns.loadChartData(); // Muat ulang data saat filter berubah
                 });
             });
         });
@@ -74,7 +117,11 @@ window.ChartApp = window.ChartApp || {};
         // FUNGSIKAN TOMBOL ZOOM
         ns.zoomInBtn.addEventListener('click', () => ns._chart?.zoom(1.1));
         ns.zoomOutBtn.addEventListener('click', () => ns._chart?.zoom(0.9));
-        ns.zoomResetBtn.addEventListener('click', () => ns._chart?.resetZoom());
+        // Tombol Reset sekarang memanggil loadChartData dengan flag isReset
+        ns.zoomResetBtn.addEventListener('click', () => {
+             console.log("Reset Zoom clicked");
+             ns.loadChartData(true); // Muat ulang data (filter harian) DAN reset zoom
+        });
     };
 
     ns.init = function(){
@@ -83,16 +130,22 @@ window.ChartApp = window.ChartApp || {};
             window.location.href = 'index.html';
             return;
         }
-        // Ambil nilai awal dari HTML untuk filter
+        // Pastikan filter awal sesuai dengan HTML
         try {
-            ns.currentFilters.location = ns.q('#location-filter .custom-option.active').getAttribute('data-value');
-            ns.currentFilters.dataType = ns.q('#data-type-filter .custom-option.active').getAttribute('data-value');
-            ns.currentFilters.range = ns.q('#time-range-filter .custom-option.active').getAttribute('data-value');
+            ns.currentFilters.location = ns.q('#location-filter .custom-option.active')?.getAttribute('data-value') || 'surabaya';
+            ns.currentFilters.dataType = ns.q('#data-type-filter .custom-option.active')?.getAttribute('data-value') || 'Suhu Udara (°C)';
+            ns.currentFilters.range = ns.q('#time-range-filter .custom-option.active')?.getAttribute('data-value') || '5';
+            
+            // Set teks trigger sesuai filter awal
+            ns.q('#location-filter .custom-select-trigger').textContent = ns.q('#location-filter .custom-option.active span')?.textContent || 'Kota Surabaya';
+            ns.q('#data-type-filter .custom-select-trigger').textContent = ns.q('#data-type-filter .custom-option.active span')?.textContent || 'Suhu Udara';
+            ns.q('#time-range-filter .custom-select-trigger').textContent = ns.q('#time-range-filter .custom-option.active span')?.textContent || 'Per 5 Menit (Hari Terakhir)';
+
         } catch (e) {
-            console.error("Gagal membaca filter awal dari HTML, menggunakan default.");
+            console.error("Gagal membaca filter awal dari HTML.", e);
         }
         
         ns.setupEventListeners();
-        ns.loadChartData(); // Muat data awal
+        ns.loadChartData(); // Muat data awal (otomatis terfilter harian)
     };
 })(window.ChartApp);

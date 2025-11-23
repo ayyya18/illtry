@@ -4,19 +4,17 @@
 
     function toggleCategoryView(category) {
         try {
-            const mikroKlimatCards = document.querySelectorAll('.mikro-klimat-card');
-            const kualitasAirCards = document.querySelectorAll('.kualitas-air-card');
-            if (category === 'mikro-klimat') {
-                mikroKlimatCards.forEach(card => card.classList.remove('hidden'));
-                kualitasAirCards.forEach(card => card.classList.add('hidden'));
-            } else if (category === 'kualitas-air') {
-                mikroKlimatCards.forEach(card => card.classList.add('hidden'));
-                kualitasAirCards.forEach(card => card.classList.remove('hidden'));
-            } else {
-                console.warn('toggleCategoryView: unknown category', category);
-            }
+            // Ambil semua kartu
+            const allCards = document.querySelectorAll('.mikro-klimat-card, .kualitas-air-card');
+            
+            // Paksa semua kartu untuk tampil (hapus class 'hidden' jika ada)
+            allCards.forEach(card => {
+                card.classList.remove('hidden');
+            });
+            
+            console.log('Menampilkan semua kategori sensor.');
         } catch (err) {
-            console.error('toggleCategoryView error for category', category, err);
+            console.error('Error in toggleCategoryView', err);
         }
     }
 

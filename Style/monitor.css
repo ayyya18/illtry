@@ -168,7 +168,9 @@
 
 .container {
     width: 100%;
-    max-width: 1400px;
+    height: 100%;
+    max-width: 95%;
+    max-height: 95%;
 }
 
 .card,
@@ -382,7 +384,7 @@
 }
 
 .sensor-card, .wind-card, .rainfall-card, .humidity-card {
-    padding: 24px;
+    padding: 35px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -606,3 +608,8 @@
 .side-menu-nav li a:hover { background: rgba(255, 255, 255, 0.15); }
 .side-menu-nav li a i { font-size: 1.2em; width: 25px; text-align: center; }
 .logout-item { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+body.app-bg-centered {
+    padding: 10px; /* Kurangi padding (aslinya 20px) */
+    max-height: 100vh; /* Memastikan tinggi tidak melebihi layar */
+    overflow: auto; /* Mengizinkan scroll jika konten terlalu tinggi */
+}
